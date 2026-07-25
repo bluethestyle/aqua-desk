@@ -17,7 +17,7 @@ import type { AquariumSnapshot } from '@aquadesk/game-spec';
 import { PageShell } from '../../components/page-shell';
 import { AquariumCanvas } from '../../components/aquarium-canvas';
 import { requestWalletRefresh } from '../../components/wallet-bar';
-import { applySnapshot as bridgeApplySnapshot, hasBridge } from '../../lib/bridge';
+import { applySnapshot as bridgeApplySnapshot, hasBridge, previewWallpaper } from '../../lib/bridge';
 import { loadLobby, type LobbyState } from '../../lib/supabase/aquarium';
 import {
   claimGifts,
@@ -36,6 +36,12 @@ export default function LobbyPage() {
   const [notice, setNotice] = useState<string | null>(null);
   /** 발급된 공유 링크(세션 내 표시용 — 토큰은 30일 만료, user_id 미노출). */
   const [shareUrl, setShareUrl] = useState<string | null>(null);
+  /** 네이티브 WebView 모드 여부 — SSR/hydration 불일치 방지 위해 effect에서 판정. */
+  const [nativeMode, setNativeMode] = useState(false);
+
+  useEffect(() => {
+    setNativeMode(hasBridge());
+  }, []);
 
   const refresh = useCallback(async () => {
     const next = await loadLobby();
@@ -226,6 +232,15 @@ export default function LobbyPage() {
             <button type="button" onClick={onClaim} disabled={busy} style={btn}>
               하트 수령 (claim_gifts)
             </button>
+            {nativeMode && (
+              <button
+                type="button"
+                onClick={() => void previewWallpaper()}
+                style={{ ...btn, border: '1px solid #2e6cff', background: '#13315c' }}
+              >
+                🐟 내 어항을 배경으로 (previewWallpaper)
+              </button>
+            )}
           </section>
 
           {/* 소셜 공유: 불투명 토큰 링크만 노출(user_id 금지 — GUARDRAILS §1.3) */}
