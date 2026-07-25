@@ -65,8 +65,8 @@
 
 ### 4.1 RLS 분류
 - **권위 테이블 (클라 SELECT-only, WRITE 정책 없음=거부)**: `wallets`, `inventory`, `dex_entries`, `purchases`, `gifts`, `fish_instances`(어항 소유 EXISTS join), `fishing_sessions`.
-- **토큰 테이블 (정책 없음=직접 SELECT/INSERT 거부, RPC 전용)**: `share_tokens`.
-- **사용자 편집 (열 제한 owner write)**: `aquariums`(클라는 `slots`만), `profiles`(클라는 `display_name`·`settings`만). 나머지 보호 컬럼은 guard 트리거가 복원.
+- **토큰 테이블 (정책 없음=직접 SELECT/INSERT 거부, RPC/Edge 전용)**: `share_tokens`, `ad_reward_log`(service-role Edge 전용).
+- **사용자 편집 (열 제한 owner write)**: `aquariums`(클라는 `slots`만 — 단, **신규 코드는 `save_slots` RPC 사용**: version CAS가 걸려 네이티브 sync가 version 비교로 갱신을 감지한다. 직접 UPDATE는 하위호환 유지), `profiles`(클라는 `display_name`·`settings`만). 나머지 보호 컬럼은 guard 트리거가 복원.
 - **카탈로그 (public read)**: `themes`, `items`, `fish_species`, `fishing_spots`, `synergies`.
 
 ### 4.2 보호 컬럼 + GUC 트리거 패턴 (★자주 틀림)
@@ -85,13 +85,15 @@
 | `collect_offline` | RPC(DEF) | `collect_offline(aquarium_id uuid) → bigint` | ✔ | 오프라인 코인 적립 + `last_collected_at` |
 | `purchase_item` | RPC(DEF) | `purchase_item(item_id text)` | – | 가격 원자 차감 + `inventory` upsert |
 | `set_aquarium_theme` | RPC(DEF) | `set_aquarium_theme(aquarium_id uuid, theme_id text)` | ✔ | 소유/프리미엄 검증 후 `theme_id` |
+| `save_slots` | RPC(DEF) | `save_slots(aquarium_id uuid, slots jsonb, expected_version int) → jsonb` | ✔ | slots 저장 + `version` CAS(슬롯 캡 5 검증) |
 | `daily-shop-roll` | Edge | `()` | (svc) | `date+user` seed 6슬롯 |
 | `verify-receipt` | Edge(svc) | `(platform text, receipt text)` | (svc) | 영수증 검증, `purchases` UNIQUE 멱등, 지급 |
 | `issue_share_token` | RPC(DEF) | `issue_share_token(aquarium_idx int) → text` | – | 16자+ 토큰만 반환 |
 | `get_shared_aquarium` | RPC(DEF) | `get_shared_aquarium(token text) → jsonb` | – | read-only 스냅샷, `user_id` 미반환 |
 | `send_heart` | RPC(DEF) | `send_heart(to_token text)` | – | 토큰→user, 자기선물 차단, 일 5회 |
 | `claim_gifts` | RPC(DEF) | `claim_gifts() → int` | – | hearts 적립, 100→1000 coins 환산 |
-| `grant-ad-reward` | Edge(svc) | `(kind text)` | (svc) | 광고 보상, 일 횟수 제한, SSV |
+| `grant_ad_reward` | RPC(**svc 전용**) | `grant_ad_reward(target_user uuid, kind text, nonce text) → jsonb` | – | [멱등→한도→지급→로그] 단일 트랜잭션. 재전송(nonce 재사용)=저장된 결과 재반환. **authenticated 실행 회수**(Edge SSV 게이트 우회 방지). 상수 SoT=game-spec `AD_REWARD` |
+| `grant-ad-reward` | Edge(svc) | `(kind text, ssv jsonb)` | (svc) | JWT 해석+SSV 검증(스텁 — 프로덕션 전 서명검증 교체) 후 `grant_ad_reward` RPC 위임 |
 
 > ✔ = 보호 컬럼 쓰기 → `set_config('app.authority_write','on',true)` 선행 필수. (svc) = service-role Edge라 GUC 불필요.
 

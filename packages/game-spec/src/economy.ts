@@ -28,6 +28,24 @@ export const STAMINA = {
 export const STAMINA_CAP_WITH_PASS = STAMINA.baseCap + STAMINA.passBonus; // 7
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Rewarded ads (GUARDRAILS §4.3 grant-ad-reward: kind별 1일 한도 + nonce 멱등)
+// 서버 구현(grant_ad_reward RPC / Edge)은 이 값을 미러한다 — 여기가 SoT.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const AD_REWARD = {
+  /** kind별 1일 시청 보상 한도 (UTC 일 기준). */
+  dailyLimit: {
+    stamina: 5,
+    offline_x2: 1,
+    shop_refresh: 1,
+  },
+  /** kind='stamina' 1회 지급량 (cap 초과분은 버려짐). */
+  staminaReward: 1,
+} as const;
+
+export type AdRewardKind = keyof typeof AD_REWARD.dailyLimit;
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Offline coins (GUARDRAILS §6: 어종당 10 × growth_stage coin/h × (1+coin_rate_bonus),
 //                캡 6h(무료) / 24h(패스))
 // ─────────────────────────────────────────────────────────────────────────────
