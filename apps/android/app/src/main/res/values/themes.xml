@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 풀스크린 웹뷰 셸 — 심해 배경색과 동일 톤(웹 layout.tsx #0b1f3a 정합). -->
+    <style name="Theme.AquaDesk" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/deep_sea</item>
+        <item name="android:statusBarColor">@color/deep_sea</item>
+        <item name="android:navigationBarColor">@color/deep_sea</item>
+    </style>
+</resources>

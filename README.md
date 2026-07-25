@@ -26,8 +26,9 @@
 | 공유 뷰어 `/aquarium/[token]` | ✅ get_shared_aquarium read-only(user_id 비노출) + send_heart |
 | 계정 `/account` | ✅ 게스트→정식 전환(진행 승계) · 이메일 로그인 · 로그아웃 |
 | E2E (`apps/web/e2e`) | ✅ Playwright 3 프로파일(android/ios/desktop) — UI 플로우 + API 계약(save_slots CAS·광고 한도) |
-| CI (`.github/workflows/ci.yml`) | ✅ typecheck·game-spec·build + E2E 매트릭스 |
-| `apps/android`, `apps/ios` | ⬜ 자리표시(추후) |
+| CI (`.github/workflows/ci.yml`) | ✅ typecheck·game-spec·build + E2E 매트릭스 + **Android APK 아티팩트** |
+| `apps/android` (N1) | ✅ 라이브 배경(WallpaperService+GLES2·FishFSM·게이팅·비가시 큐잉·ContentObserver IPC) + WebView 셸/브리지(Promise 셔임·Keystore AuthStore·딥링크·온보딩 인텐트) — 위젯·SyncWorker는 N2 |
+| `apps/ios` | ⬜ 자리표시(P1) |
 
 **알려진 한계/추후**: ① `purchase_item` 클라 멱등키(더블클릭은 busy 가드로만 방지) ② `grant-ad-reward` SSV는 형식 검증 스텁(서명 검증은 프로덕션 전 교체 — 일일한도·nonce 멱등은 구현됨) ③ `offline_x2`/`shop_refresh` 광고 보상은 토큰성 적립 미구현(수락만) ④ 네이티브(Android 배경/셸)·iOS 미구현.
 

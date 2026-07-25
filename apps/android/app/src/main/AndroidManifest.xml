@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Aqua Desk — 얇은 네이티브 셸 + 라이브 배경 (설계서/03).
+  단일 프로세스 원칙: android:process 를 지정하지 않는다(§1 모듈 맵 주석).
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:theme="@style/Theme.AquaDesk">
+
+        <!-- WebView 셸 (설계서/03 §8): UA 'AquaDesk-Android' + JS 브리지 -->
+        <activity
+            android:name=".web.WebAppActivity"
+            android:exported="true"
+            android:configChanges="orientation|screenSize|keyboardHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- 딥링크: aquadesk://sync-complete / aquarium/{token} / login (GUARDRAILS §5) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="aquadesk" />
+            </intent-filter>
+        </activity>
+
+        <!-- 라이브 배경 (설계서/03 §1·§4): GL ES 2.0, 가시성 게이팅, 비가시 큐잉 -->
+        <service
+            android:name=".wallpaper.AquariumWallpaperService"
+            android:exported="true"
+            android:permission="android.permission.BIND_WALLPAPER">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/aquarium_wallpaper" />
+        </service>
+
+        <!-- IPC 통지 전용 ContentProvider (설계서/03 §4.3 — LocalBroadcast 금지) -->
+        <provider
+            android:name=".ipc.CacheSignalProvider"
+            android:authorities="com.aquadesk.cache"
+            android:exported="false" />
+    </application>
+</manifest>

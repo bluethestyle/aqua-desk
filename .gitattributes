@@ -1,0 +1,3 @@
+# 셸 스크립트는 어떤 플랫폼에서 체크아웃해도 LF 유지(CI 리눅스에서 gradlew 실행).
+apps/android/gradlew text eol=lf
+*.sh text eol=lf

@@ -63,6 +63,13 @@ htmlcov/
 supabase/.branches
 supabase/.temp
 
+# Android (Gradle)
+.gradle/
+.kotlin/
+apps/android/local.properties
+*.apk
+*.aab
+
 # embedded Postgres smoke-test data dir (scripts/db-smoke.mjs)
 .tmp-pgdata/
 

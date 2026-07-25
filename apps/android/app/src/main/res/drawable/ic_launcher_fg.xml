@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 임시 런처 아이콘 — 도트풍 물고기(정식 아트는 디자인 단계에서 교체). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <group android:translateX="27" android:translateY="36">
+        <path android:fillColor="#FF9A3D" android:pathData="M12,8 h24 v20 h-24 z" />
+        <path android:fillColor="#FF9A3D" android:pathData="M4,12 h8 v12 h-8 z" />
+        <path android:fillColor="#FFD9A8" android:pathData="M20,8 h6 v20 h-6 z" />
+        <path android:fillColor="#0B1F3A" android:pathData="M30,14 h4 v4 h-4 z" />
+        <path android:fillColor="#7FD0FF" android:pathData="M44,4 h4 v4 h-4 z" />
+        <path android:fillColor="#7FD0FF" android:pathData="M48,12 h4 v4 h-4 z" />
+        <path android:fillColor="#7FD0FF" android:pathData="M44,22 h4 v4 h-4 z" />
+    </group>
+</vector>

@@ -17,6 +17,7 @@ import type { AquariumSnapshot } from '@aquadesk/game-spec';
 import { PageShell } from '../../components/page-shell';
 import { AquariumCanvas } from '../../components/aquarium-canvas';
 import { requestWalletRefresh } from '../../components/wallet-bar';
+import { applySnapshot as bridgeApplySnapshot, hasBridge } from '../../lib/bridge';
 import { loadLobby, type LobbyState } from '../../lib/supabase/aquarium';
 import {
   claimGifts,
@@ -40,6 +41,8 @@ export default function LobbyPage() {
     const next = await loadLobby();
     setState(next);
     requestWalletRefresh();
+    // 네이티브 WebView 모드: 최신 권위 스냅샷을 라이브 배경 캐시에 반영(GUARDRAILS §5).
+    if (hasBridge()) void bridgeApplySnapshot(next.snapshot);
     return next;
   }, []);
 
@@ -48,7 +51,10 @@ export default function LobbyPage() {
     (async () => {
       try {
         const next = await loadLobby();
-        if (alive) setState(next);
+        if (alive) {
+          setState(next);
+          if (hasBridge()) void bridgeApplySnapshot(next.snapshot);
+        }
       } catch (e) {
         if (alive) setError(describe(e));
       } finally {
