@@ -45,6 +45,7 @@ npm-debug.log*
 .env
 .env.*
 !.env.example
+supabase_비번.txt
 *.pem
 *.key
 credentials.json
@@ -56,6 +57,17 @@ coverage/
 htmlcov/
 .pytest_cache/
 .tox/
+
+# Supabase (local CLI artifacts)
+supabase/.branches
+supabase/.temp
+
+# embedded Postgres smoke-test data dir (scripts/db-smoke.mjs)
+.tmp-pgdata/
+
+# Playwright artifacts
+test-results/
+playwright-report/
 
 # Misc
 *.tmp

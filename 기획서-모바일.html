@@ -1,0 +1,1748 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Aqua Desk · 기획서 (모바일)</title>
+<style>
+:root{
+  --bg:#fbfaf7; --fg:#23211d; --muted:#6b675e; --line:#e7e3da;
+  --card:#ffffff; --accent:#1f7a6b; --accent-weak:#e3f1ee; --code-bg:#f3f1ea;
+  --thead:#f0ede4; --shadow:0 1px 3px rgba(0,0,0,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#16181a; --fg:#e6e3dc; --muted:#9a958a; --line:#2c2f33;
+    --card:#1e2123; --accent:#4fd1bd; --accent-weak:#16302c; --code-bg:#0f1113;
+    --thead:#24272a; --shadow:0 1px 3px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",Roboto,sans-serif;
+  font-size:17px; line-height:1.72; word-break:keep-all; overflow-wrap:anywhere;
+}
+header.app{
+  position:sticky; top:0; z-index:20; background:var(--bg);
+  border-bottom:1px solid var(--line); backdrop-filter:saturate(1.2) blur(6px);
+}
+.app-title{padding:.7rem 1rem .35rem; font-size:.95rem; font-weight:700; letter-spacing:-.01em; color:var(--fg);}
+.app-title small{display:block; font-weight:500; color:var(--muted); font-size:.74rem; margin-top:2px;}
+nav.tabs{display:flex; gap:.4rem; overflow-x:auto; padding:.25rem .75rem .55rem; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto; border:1px solid var(--line); background:var(--card); color:var(--muted);
+  padding:.4rem .8rem; border-radius:999px; font-size:.82rem; font-weight:600; cursor:pointer;
+  white-space:nowrap; transition:.15s;
+}
+.tab.active{background:var(--accent); border-color:var(--accent); color:#fff;}
+main{max-width:760px; margin:0 auto; padding:0 1rem 5rem;}
+.doc{display:none; animation:fade .2s ease;}
+.doc.active{display:block;}
+@keyframes fade{from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none}}
+.doc h1{font-size:1.5rem; line-height:1.3; margin:1.3rem 0 .6rem; letter-spacing:-.02em;}
+.doc h2{font-size:1.22rem; margin:1.9rem 0 .55rem; padding-top:.3rem; border-top:1px solid var(--line); letter-spacing:-.01em;}
+.doc h2:first-of-type{border-top:none}
+.doc h3{font-size:1.06rem; margin:1.3rem 0 .45rem; color:var(--fg);}
+.doc h4{font-size:.96rem; margin:1rem 0 .35rem; color:var(--muted); font-weight:700;}
+.doc p{margin:.6rem 0;}
+.doc a{color:var(--accent); text-decoration:none; border-bottom:1px solid color-mix(in srgb,var(--accent) 35%,transparent);}
+.doc a:active{opacity:.6}
+.doc ul,.doc ol{padding-left:1.3rem; margin:.55rem 0;}
+.doc li{margin:.28rem 0;}
+.doc li::marker{color:var(--accent)}
+.doc blockquote{
+  margin:.9rem 0; padding:.6rem .9rem; border-left:3px solid var(--accent);
+  background:var(--accent-weak); border-radius:0 8px 8px 0; color:var(--fg);
+}
+.doc blockquote p{margin:.3rem 0}
+.doc hr{border:none; border-top:1px solid var(--line); margin:1.6rem 0;}
+.doc code{background:var(--code-bg); padding:.12em .4em; border-radius:5px; font-size:.86em;
+  font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;}
+.doc pre{background:var(--code-bg); padding:.85rem .9rem; border-radius:10px; overflow-x:auto;
+  -webkit-overflow-scrolling:touch; border:1px solid var(--line); margin:.9rem 0; box-shadow:var(--shadow);}
+.doc pre code{background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre;}
+.table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:.9rem 0;
+  border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow);}
+.doc table{border-collapse:collapse; width:100%; font-size:.86rem; background:var(--card);}
+.doc th,.doc td{border-bottom:1px solid var(--line); padding:.5rem .65rem; text-align:left; vertical-align:top;}
+.doc th{background:var(--thead); font-weight:700; white-space:nowrap;}
+.doc tr:last-child td{border-bottom:none}
+.doc input[type=checkbox]{margin-right:.4rem; accent-color:var(--accent); transform:translateY(1px);}
+details.toc{margin:1.1rem 0 .4rem; border:1px solid var(--line); border-radius:10px; background:var(--card); box-shadow:var(--shadow);}
+details.toc>summary{cursor:pointer; padding:.6rem .85rem; font-weight:700; font-size:.9rem; list-style:none; color:var(--accent);}
+details.toc>summary::-webkit-details-marker{display:none}
+details.toc>summary::before{content:"☰ "; opacity:.7}
+.toc ul{list-style:none; padding-left:0; margin:.2rem 0 .6rem;}
+.toc li{margin:0}
+.toc a{display:block; padding:.32rem .9rem; color:var(--fg); border:none; font-size:.86rem; border-left:2px solid transparent;}
+.toc a.lv3{padding-left:1.9rem; font-size:.82rem; color:var(--muted);}
+.toc a:active{background:var(--accent-weak)}
+#top{position:fixed; right:14px; bottom:18px; z-index:30; width:44px; height:44px; border-radius:50%;
+  border:1px solid var(--line); background:var(--card); color:var(--accent); font-size:1.2rem; cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.18); display:none; align-items:center; justify-content:center;}
+#top.show{display:flex}
+#toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(20px);
+  background:var(--fg); color:var(--bg); padding:.55rem 1rem; border-radius:999px; font-size:.82rem;
+  opacity:0; pointer-events:none; transition:.25s; z-index:40; max-width:90vw;}
+#toast.show{opacity:.95; transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<header class="app">
+  <div class="app-title">Aqua Desk · 기획서<small>도트 수족관 라이브 배경 + 하이브리드 앱 — 기획 문서 모음</small></div>
+  <nav class="tabs"><button class="tab active" data-target="overview">개요</button><button class="tab" data-target="doc01">01 컨셉</button><button class="tab" data-target="doc02">02 구축</button><button class="tab" data-target="doc03">03 제약</button><button class="tab" data-target="doc04">04 고도화</button></nav>
+</header>
+<main>
+<section class="doc active" id="overview" data-file="README.md">
+<h1 id="수족관-배경--하이브리드-키우기-게임--기획서">수족관 배경 · 하이브리드 키우기 게임 — 기획서</h1>
+<p>배경화면(라이브 수족관)과 별도 하이브리드 앱을 연계하는 모바일 게임의 기획 문서 모음입니다.</p>
+<h2 id="문서-목록">문서 목록</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>문서</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a href="./01-%EC%95%B1-%EC%BB%A8%EC%85%89-%EA%B8%B0%ED%9A%8D.md">01-앱-컨셉-기획.md</a></td>
+<td>서비스 정의, UX, 게임 루프, 그래픽·플랫폼 제약, MVP 범위</td>
+</tr>
+<tr>
+<td><a href="./02-%EA%B5%AC%EC%B6%95-%EA%B8%B0%ED%9A%8D-%EC%B4%88%EC%95%88.md">02-구축-기획-초안.md</a></td>
+<td>네이티브·웹·백엔드·인프라별 구축 단계, 기술 후보, 프로토타입 로드맵</td>
+</tr>
+<tr>
+<td><a href="./03-%ED%94%8C%EB%9E%AB%ED%8F%BC-%EC%A0%9C%EC%95%BD-%EB%B0%8F-%EB%8C%80%EC%95%88.md">03-플랫폼-제약-및-대안.md</a></td>
+<td>iOS/Android 배경·위젯·터치 반응의 현실적 한계와 설계 대안</td>
+</tr>
+<tr>
+<td><a href="./04-%EC%84%9C%EB%B9%84%EC%8A%A4-%EA%B3%A0%EB%8F%84%ED%99%94-%EB%B0%8F-%EB%A6%AC%EC%8A%A4%ED%81%AC-%EB%8C%80%EC%9D%91.md">04-서비스-고도화-및-리스크-대응.md</a></td>
+<td><strong>(통합 확정본)</strong> 노선(Cozy)·BM·수집/소셜/감정 메타·아트 전략·핵심 이음새·리스크 레지스터</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>설계(엔지니어링) 상세는 <a href="../%EC%84%A4%EA%B3%84%EC%84%9C/"><code>../설계서/</code></a> 참조.</p>
+</blockquote>
+<h2 id="한-줄-요약">한 줄 요약</h2>
+<p><strong>홈·잠금 화면에서 도트 수족관이 살아 움직이고</strong>, 터치 시 물결·물고기가 반응하며, <strong>전용 앱(웹 UI + 네이티브 셸)</strong> 으로 꾸미기·낚시·상점을 즐기는 <strong>저부하 픽셀 아쿠아리움 게임</strong>.</p>
+<h2 id="권장-읽기-순서">권장 읽기 순서</h2>
+<ol>
+<li>컨셉·UX 확정 → <code>01</code></li>
+<li>iOS/Android 기대치 조정 → <code>03</code></li>
+<li>구현 분업·스택·일정 → <code>02</code></li>
+<li><strong>최신 확정 결정·BM·메타·리스크 → <code>04</code></strong> (앞 문서와 충돌 시 <code>04</code> 우선)</li>
+<li>엔지니어링 설계 → <a href="../%EC%84%A4%EA%B3%84%EC%84%9C/"><code>../설계서/</code></a></li>
+</ol>
+
+</section>
+<section class="doc" id="doc01" data-file="01-앱-컨셉-기획.md">
+<h1 id="01-앱-컨셉-기획">01. 앱 컨셉 기획</h1>
+<h2 id="1-프로젝트-개요">1. 프로젝트 개요</h2>
+<h3 id="11-서비스명가칭">1.1 서비스명(가칭)</h3>
+<p><strong>「Aqua Desk」</strong> (수족관 데스크) — 명칭은 추후 확정</p>
+<h3 id="12-한-줄-정의">1.2 한 줄 정의</h3>
+<p>사용자의 <strong>스마트폰 배경(및 홈 화면 위젯 영역)</strong> 에 <strong>도트 스타일 수족관</strong>이 상시 표시되고, <strong>하이브리드 앱</strong>을 통해 수족관을 꾸미고 물고기를 키우며 낚시·상점으로 성장시키는 <strong>라이트 라이프·캐주얼 게임</strong>.</p>
+<h3 id="13-핵심-가치">1.3 핵심 가치</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>가치</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>항상 보이는 애완</strong></td>
+<td>앱을 열지 않아도 홈/잠금에서 물고기가 살아 있음</td>
+</tr>
+<tr>
+<td><strong>가벼운 재미</strong></td>
+<td>터치 한 번에 물결·도망·호기심 반응</td>
+</tr>
+<tr>
+<td><strong>짧은 세션</strong></td>
+<td>꾸미기·낚시·상점은 1~3분 단위</td>
+</tr>
+<tr>
+<td><strong>저전력·저용량</strong></td>
+<td>데이브 더 다이버식 픽셀, 제한된 스프라이트·프레임</td>
+</tr>
+</tbody></table></div>
+<h3 id="14-레퍼런스">1.4 레퍼런스</h3>
+<ul>
+<li><strong>비주얼</strong>: 《Dave the Diver》 — 굵은 픽셀, 제한 팔레트, 짧은 애니 루프, 작은 스프라이트 시트</li>
+<li><strong>UX 참고</strong>: 라이브 배경화면 게임, 홈 위젯 수족관, 방치형 키우기(피드·성장만 경량화)</li>
+</ul>
+<hr>
+<h2 id="2-사용자-관점-경험ux">2. 사용자 관점 경험(UX)</h2>
+<h3 id="21-일상-루프배경-레이어">2.1 일상 루프(배경 레이어)</h3>
+<pre><code>[기기 켜기/홈 복귀]
+    → 배경 수족관 자동 렌더
+    → 물고기 패트롤·식빵/기포 등 앰비언트 모션
+    → (선택) 배경/위젯 터치 → 물결 + 물고기 반응
+    → (선택) 앱 아이콘 근처 터치(Android 위젯) → 국소 반응
+</code></pre>
+<h3 id="22-앱-루프하이브리드-레이어">2.2 앱 루프(하이브리드 레이어)</h3>
+<pre><code>[앱 아이콘 탭]
+    → 로비: 내 수족관 미리보기 + 상태(배고픔, 레벨)
+    → 꾸미기: 바닥·식물·장식·조명 배치
+    → 낚시: 미니게임으로 새 종·재료 획득
+    → 상점: 코인/재화로 용품·물고기·먹이 구매
+    → 저장 → 네이티브 배경 엔진에 상태 동기화
+</code></pre>
+<h3 id="23-화면-구성앱-내-초안">2.3 화면 구성(앱 내, 초안)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>화면</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>로비</strong></td>
+<td>수족관 썸네일, 재화, 퀵 액션(먹이, 청소)</td>
+</tr>
+<tr>
+<td><strong>꾸미기</strong></td>
+<td>그리드/슬롯 배치, 인벤토리에서 드래그</td>
+</tr>
+<tr>
+<td><strong>낚시</strong></td>
+<td>타이밍·당기기 등 1스테이지 미니게임</td>
+</tr>
+<tr>
+<td><strong>상점</strong></td>
+<td>일일 로테이션, 패키지, 프리미엄(후순위)</td>
+</tr>
+<tr>
+<td><strong>도감</strong></td>
+<td>획득 물고기·희귀도</td>
+</tr>
+<tr>
+<td><strong>설정</strong></td>
+<td>배경 품질(절전/표준), 알림, 계정</td>
+</tr>
+</tbody></table></div>
+<h3 id="24-터치-반응재미-요소--컨셉">2.4 터치 반응(재미 요소) — 컨셉</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>트리거</th>
+<th>반응(예시)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>배경 탭</td>
+<td>Ripples 0.5~1s, 물고기 scatter → 2s 후 복귀</td>
+</tr>
+<tr>
+<td>같은 영역 연타</td>
+<td>작은 기포 연출, 희귀 fish peek</td>
+</tr>
+<tr>
+<td>위젯 영역 탭(Android)</td>
+<td>위젯 내부만 국소 파문, 아이콘 가리지 않음</td>
+</tr>
+<tr>
+<td>장시간 미접촉</td>
+<td>느린 drift, 가끔 yawning fish</td>
+</tr>
+</tbody></table></div>
+<p><strong>주의</strong>: iOS는 “전체 홈 화면 라이브 배경 + 임의 터치”가 제한적입니다. 상세는 <code>03-플랫폼-제약-및-대안.md</code>.</p>
+<hr>
+<h2 id="3-게임-디자인">3. 게임 디자인</h2>
+<h3 id="31-성장경제라이트">3.1 성장·경제(라이트)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>요소</th>
+<th>설계 방향</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>재화</strong></td>
+<td>코인(일반), 진주(희귀, 낚시/도전)</td>
+</tr>
+<tr>
+<td><strong>물고기</strong></td>
+<td>종별 성장 단계 3~4, 먹이·시간 기반(오프라인 캡)</td>
+</tr>
+<tr>
+<td><strong>수족관</strong></td>
+<td>슬롯 수 제한 → 확장은 레벨/상점</td>
+</tr>
+<tr>
+<td><strong>낚시</strong></td>
+<td>스태미나 일일 N회, 실패해도 재료 소량</td>
+</tr>
+<tr>
+<td><strong>상점</strong></td>
+<td>일일 6슬롯 로테이션, 꾸미기 파츠 위주</td>
+</tr>
+</tbody></table></div>
+<h3 id="32-콘텐츠-파이프라인초기">3.2 콘텐츠 파이프라인(초기)</h3>
+<ol>
+<li><strong>MVP 물고기</strong> 5종 + 1종 희귀  </li>
+<li><strong>장식</strong> 10종(바닥 3, 식물 4, 오브젝트 3)  </li>
+<li><strong>낚시 맵</strong> 1곳  </li>
+<li><strong>이벤트</strong> 후속: 계절 스킨, 한정 fish</li>
+</ol>
+<h3 id="33-그래픽-스펙데이브-더-다이버-스타일-저부하">3.3 그래픽 스펙(데이브 더 다이버 스타일, 저부하)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>가이드</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>해상도</strong></td>
+<td>물고기 스프라이트 32×32 ~ 48×48, 장식 타일 16×16</td>
+</tr>
+<tr>
+<td><strong>팔레트</strong></td>
+<td>배경+UI 합산 64색 이내 권장</td>
+</tr>
+<tr>
+<td><strong>애니</strong></td>
+<td>fish swim 4<del>6프레임, 반응 2</del>3프레임</td>
+</tr>
+<tr>
+<td><strong>배경</strong></td>
+<td>패럴랙스 2~3레이어, 정적+저주기 스크롤</td>
+</tr>
+<tr>
+<td><strong>에셋</strong></td>
+<td>스프라이트 시트 + JSON 메타, WebP/PNG8</td>
+</tr>
+<tr>
+<td><strong>목표</strong></td>
+<td>배경 RAM &lt; 30MB, CPU 피크 배경화면에서 5% 미만(Android 중급기 기준)</td>
+</tr>
+</tbody></table></div>
+<h3 id="34-사운드후순위">3.4 사운드(후순위)</h3>
+<ul>
+<li>배경: 무음 또는 초저음량 앰비언트(기본 OFF)  </li>
+<li>앱 내: 짧은 SFX만(먹이, 낚시 성공)</li>
+</ul>
+<hr>
+<h2 id="4-시스템-구성논리">4. 시스템 구성(논리)</h2>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│  사용자 기기                                             │
+│  ┌──────────────────┐    ┌──────────────────────────┐  │
+│  │ Native Shell     │    │ Web App (Vercel)         │  │
+│  │ · Wallpaper      │◄──►│ · Lobby / Shop / Fish    │  │
+│  │ · Widget (AOS)   │    │ · Decorate / Fishing UI  │  │
+│  │ · Bridge / Push  │    └───────────┬──────────────┘  │
+│  └────────┬─────────┘                │                 │
+│           │         Supabase API      │                 │
+│           └────────────┬──────────────┘                 │
+└────────────────────────┼────────────────────────────────┘
+                         ▼
+              ┌──────────────────────┐
+              │ Supabase             │
+              │ Auth · DB · Storage  │
+              │ Edge Fn (선택)       │
+              └──────────────────────┘
+</code></pre>
+<h3 id="41-데이터-동기화-원칙">4.1 데이터 동기화 원칙</h3>
+<ul>
+<li><strong>진실의 원천(Source of Truth)</strong>: Supabase <code>aquarium_state</code>  </li>
+<li><strong>로컬 캐시</strong>: 네이티브 배경용 경량 JSON + 스프라이트 번들  </li>
+<li><strong>동기화 시점</strong>: 앱 포그라운드, 백그라운드 주기(15~30분, OS 정책 내), 수동 새로고침</li>
+</ul>
+<hr>
+<h2 id="5-타깃플랫폼">5. 타깃·플랫폼</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>플랫폼</th>
+<th>1차 목표</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Android</strong></td>
+<td>라이브 배경 + 홈 위젯 + 터치 반응</td>
+<td>핵심 차별화</td>
+</tr>
+<tr>
+<td><strong>iOS</strong></td>
+<td>위젯 + (제한적) 잠금/배경 연동</td>
+<td>라이브 터치 배경은 대안 설계 필수</td>
+</tr>
+</tbody></table></div>
+<p><strong>최소 OS</strong>: Android 10+, iOS 16+ (WidgetKit 기준)</p>
+<hr>
+<h2 id="6-mvp-범위프로토타입">6. MVP 범위(프로토타입)</h2>
+<h3 id="포함">포함</h3>
+<ul>
+<li><input disabled="" type="checkbox"> 게스트/이메일 로그인(Supabase Auth)  </li>
+<li><input disabled="" type="checkbox"> 기본 수족관 1종, 물고기 3종  </li>
+<li><input disabled="" type="checkbox"> Android 라이브 배경 + 단순 터치 파문  </li>
+<li><input disabled="" type="checkbox"> 웹: 로비, 상점(더미 3품목), 꾸미기(슬롯 5개)  </li>
+<li><input disabled="" type="checkbox"> 상태 저장·배경 반영 1회 동기화</li>
+</ul>
+<h3 id="제외후속">제외(후속)</h3>
+<ul>
+<li>iOS 라이브 배경 수준 동등화  </li>
+<li>PvP, 길드, IAP, 푸시 이벤트  </li>
+<li>복잡 낚시·스토리</li>
+</ul>
+<hr>
+<h2 id="7-리스크가정">7. 리스크·가정</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>리스크</th>
+<th>대응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>iOS 라이브 배경·홈 터치 불가</td>
+<td>위젯 인터랙션 + 앱 내 “미러 수족관”</td>
+</tr>
+<tr>
+<td>배터리 소모</td>
+<td>FPS 상한, 절전 모드, 화면 OFF 시 일시정지</td>
+</tr>
+<tr>
+<td>스토어 정책(배경 앱)</td>
+<td>배경 권한 명확 고지, 데이터 최소 수집</td>
+</tr>
+<tr>
+<td>WebView·네이티브 상태 불일치</td>
+<td>버전 필드 + 강제 리프레시 UX</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="8-성공-지표프로토타입-이후">8. 성공 지표(프로토타입 이후)</h2>
+<ul>
+<li>D1 재방문(배경 확인 또는 앱 오픈)  </li>
+<li>배경 유지율(7일 후에도 배경 설정 유지)  </li>
+<li>꾸미기·상점 각 1회 이상 완료 유저 비율</li>
+</ul>
+<hr>
+<h2 id="9-다음-단계">9. 다음 단계</h2>
+<ol>
+<li><code>03-플랫폼-제약-및-대안.md</code>로 iOS/Android 기대치 합의  </li>
+<li><code>02-구축-기획-초안.md</code>에서 스택·스프린트 확정  </li>
+<li>UX 와이어프레임 + 물고기 1종 픽셀 시트 제작</li>
+</ol>
+
+</section>
+<section class="doc" id="doc02" data-file="02-구축-기획-초안.md">
+<h1 id="02-구축-기획-초안">02. 구축 기획 초안</h1>
+<p>컨셉(<code>01</code>)을 기준으로 <strong>네이티브 · 웹앱 · 백엔드 · 인프라 · 에셋 · 프로토타입</strong> 별 구축 초안입니다.<br>엔진은 “단일 게임 엔진”보다 <strong>역할 분리(네이티브 렌더 + 웹 UI)</strong> 를 전제로 합니다.</p>
+<hr>
+<h2 id="1-아키텍처-총괄">1. 아키텍처 총괄</h2>
+<pre><code>┌────────────────────────────────────────────────────────────────┐
+│ Layer A: Native (Android / iOS)                                 │
+│  · WallpaperService / Widget Extension                          │
+│  · 2D 렌더 (Canvas / OpenGL ES / Metal 저해상)                  │
+│  · 터치·센서 브리지, 로컬 캐시, 딥링크                           │
+│  · WebView 컨테이너 + JS Bridge                                 │
+└────────────────────────────┬───────────────────────────────────┘
+                             │ HTTPS / postMessage
+┌────────────────────────────▼───────────────────────────────────┐
+│ Layer B: Web App (Vercel)                                       │
+│  · Next.js App Router (권장)                                    │
+│  · Lobby, Shop, Decorate, Fishing (Canvas or DOM+sprite)        │
+│  · Supabase JS Client                                           │
+└────────────────────────────┬───────────────────────────────────┘
+                             │
+┌────────────────────────────▼───────────────────────────────────┐
+│ Layer C: Backend (Supabase)                                     │
+│  · Postgres + RLS                                               │
+│  · Auth, Storage(assets), Realtime(선택)                        │
+│  · Edge Functions: 영수증 검증, 일일 상점 시드(선택)            │
+└────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2 id="2-기술-스택-후보-및-권장프로토타입">2. 기술 스택 후보 및 권장(프로토타입)</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>영역</th>
+<th>후보</th>
+<th>프로토타입 권장</th>
+<th>이유</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Android Native</strong></td>
+<td>Kotlin + WallpaperService</td>
+<td><strong>Kotlin</strong></td>
+<td>라이브 배경 API 1급 지원</td>
+</tr>
+<tr>
+<td><strong>iOS Native</strong></td>
+<td>Swift + WidgetKit</td>
+<td><strong>Swift</strong></td>
+<td>배경 대신 위젯·App Intent</td>
+</tr>
+<tr>
+<td><strong>크로스 셸</strong></td>
+<td>React Native, Flutter</td>
+<td><strong>React Native</strong> (선택)</td>
+<td>WebView·JS Bridge 성숙, 팀 웹 스택과 맞춤</td>
+</tr>
+<tr>
+<td><strong>웹앱</strong></td>
+<td>Next.js, Vite+React</td>
+<td><strong>Next.js on Vercel</strong></td>
+<td>SSR/라우팅, 배포 단순</td>
+</tr>
+<tr>
+<td><strong>백엔드</strong></td>
+<td>Supabase, Firebase</td>
+<td><strong>Supabase</strong></td>
+<td>Postgres, Auth, Storage 일원화</td>
+</tr>
+<tr>
+<td><strong>배경 렌더</strong></td>
+<td>Custom 2D, LibGDX lite</td>
+<td><strong>Custom Canvas/OpenGL</strong></td>
+<td>픽셀 스프라이트만이면 엔진 과함</td>
+</tr>
+<tr>
+<td><strong>웹 미니게임</strong></td>
+<td>Phaser 3, PixiJS, CSS sprite</td>
+<td><strong>PixiJS</strong> 또는 <strong>Canvas 2D</strong></td>
+<td>낚시만 가볍게</td>
+</tr>
+<tr>
+<td><strong>에셋</strong></td>
+<td>Aseprite → sheet</td>
+<td><strong>Aseprite + TexturePacker</strong></td>
+<td>도트 파이프라인 표준</td>
+</tr>
+</tbody></table></div>
+<p><strong>Unity / Unreal</strong>: 풀 3D·대형 미니게임이 아니면 <strong>비권장</strong>(APK/IPA·배경 메모리 부담).</p>
+<hr>
+<h2 id="3-구축-영역별-상세">3. 구축 영역별 상세</h2>
+<h3 id="31-native--android-우선순위-p0">3.1 Native — Android (우선순위 P0)</h3>
+<h4 id="목표">목표</h4>
+<ul>
+<li><code>WallpaperService</code> 기반 라이브 수족관  </li>
+<li>터치 시 파문·물고기 scatter  </li>
+<li>Supabase에서 받은 <code>aquarium_snapshot</code> 로컬 반영</li>
+</ul>
+<h4 id="모듈">모듈</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>모듈</th>
+<th>책임</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>AquariumWallpaperService</code></td>
+<td>Surface 생명주기, FPS 30 cap</td>
+</tr>
+<tr>
+<td><code>SpriteEngine</code></td>
+<td>시트 컷, 애니 tick, 패럴랙스 레이어</td>
+</tr>
+<tr>
+<td><code>TouchController</code></td>
+<td>tap → ripple shader / particle</td>
+</tr>
+<tr>
+<td><code>SyncWorker</code></td>
+<td>WorkManager 15~30분, 앱 resume 시 즉시</td>
+</tr>
+<tr>
+<td><code>WebAppActivity</code></td>
+<td>Fullscreen WebView, bridge</td>
+</tr>
+<tr>
+<td><code>BridgeModule</code></td>
+<td><code>getSnapshot()</code>, <code>applySnapshot(json)</code>, <code>openRoute</code></td>
+</tr>
+</tbody></table></div>
+<h4 id="구축-단계">구축 단계</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>단계</th>
+<th>산출물</th>
+<th>기간(가안)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A1</td>
+<td>정적 배경 + fish 1종 패트롤</td>
+<td>1주</td>
+</tr>
+<tr>
+<td>A2</td>
+<td>터치 파문 + 반응 애니</td>
+<td>1주</td>
+</tr>
+<tr>
+<td>A3</td>
+<td>로컬 JSON 상태 + 수동 sync API</td>
+<td>1주</td>
+</tr>
+<tr>
+<td>A4</td>
+<td>WebView + bridge 연동</td>
+<td>1주</td>
+</tr>
+</tbody></table></div>
+<h4 id="핵심-api-bridge-초안">핵심 API (Bridge 초안)</h4>
+<pre><code class="language-typescript">// Web → Native
+window.AquaDesk.applySnapshot(snapshot: AquariumSnapshot): void
+window.AquaDesk.previewWallpaper(): void
+
+// Native → Web
+aquarium://sync-complete?version=123
+</code></pre>
+<hr>
+<h3 id="32-native--ios-우선순위-p1">3.2 Native — iOS (우선순위 P1)</h3>
+<h4 id="목표-1">목표</h4>
+<ul>
+<li><strong>WidgetKit</strong> 중·대형 위젯에 수족관 스냅샷 + App Intent로 “먹이 주기”  </li>
+<li>앱 내 <strong>미러 뷰</strong>에서 터치 반응(홈 전체 터치 대체)  </li>
+<li>iOS 17+ <strong>interactive widget</strong> 가능 범위 조사 후 적용</li>
+</ul>
+<h4 id="모듈-1">모듈</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>모듈</th>
+<th>책임</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>AquariumWidget</code></td>
+<td>Timeline, snapshot 이미지 또는 저프레임</td>
+</tr>
+<tr>
+<td><code>AppIntentFeed</code></td>
+<td>위젯 버튼 → Supabase RPC</td>
+</tr>
+<tr>
+<td><code>MirrorAquariumView</code></td>
+<td>SwiftUI + SpriteKit 2D</td>
+</tr>
+<tr>
+<td><code>WebViewContainer</code></td>
+<td>WKWebView, message handler</td>
+</tr>
+</tbody></table></div>
+<h4 id="구축-단계-1">구축 단계</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>단계</th>
+<th>산출물</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>I1</td>
+<td>Static widget + daily refresh</td>
+</tr>
+<tr>
+<td>I2</td>
+<td>App Intent 1개(먹이)</td>
+</tr>
+<tr>
+<td>I3</td>
+<td>앱 내 Mirror + WebView</td>
+</tr>
+<tr>
+<td>I4</td>
+<td>(옵션) Live Activity “수족관 상태”</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h3 id="33-web-app--vercel-p0">3.3 Web App — Vercel (P0)</h3>
+<h4 id="목표-2">목표</h4>
+<p>꾸미기·상점·낚시·로비 UI, Supabase 직접 호출(anon + RLS), 프로토타입 배포.</p>
+<h4 id="권장-구조">권장 구조</h4>
+<pre><code>apps/web/
+  app/
+    (auth)/login/
+    lobby/
+    decorate/
+    shop/
+    fishing/
+  components/
+  lib/supabase/
+  lib/game/        # 순수 TS 게임 로직
+  public/sprites/
+</code></pre>
+<h4 id="구축-단계-2">구축 단계</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>단계</th>
+<th>산출물</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>W1</td>
+<td>Supabase Auth + lobby shell</td>
+</tr>
+<tr>
+<td>W2</td>
+<td>Decorate (슬롯 state → DB upsert)</td>
+</tr>
+<tr>
+<td>W3</td>
+<td>Shop (더미 catalog + purchase RPC)</td>
+</tr>
+<tr>
+<td>W4</td>
+<td>Fishing minigame (Pixi 1 stage)</td>
+</tr>
+<tr>
+<td>W5</td>
+<td><code>postMessage</code> bridge 스텁 + 문서</td>
+</tr>
+</tbody></table></div>
+<h4 id="vercel-설정-초안">Vercel 설정 초안</h4>
+<ul>
+<li>Preview: PR마다  </li>
+<li>Production: <code>main</code>  </li>
+<li>Env: <code>NEXT_PUBLIC_SUPABASE_URL</code>, <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>  </li>
+<li>Native WebView UA 감지 → safe-area CSS</li>
+</ul>
+<hr>
+<h3 id="34-backend--supabase-p0">3.4 Backend — Supabase (P0)</h3>
+<h4 id="스키마-초안">스키마 초안</h4>
+<pre><code class="language-sql">-- profiles (auth.users 1:1)
+profiles (id uuid PK, display_name, created_at)
+
+-- aquariums
+aquariums (
+  id uuid PK,
+  user_id uuid FK,
+  theme_id text,
+  slots jsonb,          -- [{slotId, itemId, x, y}]
+  version int,
+  updated_at timestamptz
+)
+
+-- fish_instances
+fish_instances (
+  id uuid PK,
+  aquarium_id uuid FK,
+  species_id text,
+  growth_stage int,
+  hunger float,
+  last_fed_at timestamptz
+)
+
+-- inventory
+inventory (
+  user_id uuid,
+  item_id text,
+  qty int,
+  PK (user_id, item_id)
+)
+
+-- catalog (시드)
+items (id, type, price_coin, asset_key)
+fish_species (id, rarity, base_sprite)
+</code></pre>
+<h4 id="rls-원칙">RLS 원칙</h4>
+<ul>
+<li>모든 테이블: <code>auth.uid() = user_id</code> (또는 aquarium 소유자 join)  </li>
+<li><code>catalog</code>만 public read</li>
+</ul>
+<h4 id="edge-functions-선택">Edge Functions (선택)</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>함수</th>
+<th>용도</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>daily-shop-roll</code></td>
+<td>날짜+user_id 시드 상점</td>
+</tr>
+<tr>
+<td><code>fishing-resolve</code></td>
+<td>서버에서 보상 결정(치팅 방지)</td>
+</tr>
+</tbody></table></div>
+<h4 id="storage">Storage</h4>
+<pre><code>sprites/fish/{species}/{frame}.png
+sprites/deco/{id}.png
+snapshots/{userId}/latest.webp   -- 위젯용
+</code></pre>
+<h4 id="구축-단계-3">구축 단계</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>단계</th>
+<th>산출물</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>B1</td>
+<td>스키마 + RLS + seed catalog</td>
+</tr>
+<tr>
+<td>B2</td>
+<td>Auth + profile trigger</td>
+</tr>
+<tr>
+<td>B3</td>
+<td>aquarium CRUD + version bump</td>
+</tr>
+<tr>
+<td>B4</td>
+<td>fishing RPC + inventory</td>
+</tr>
+<tr>
+<td>B5</td>
+<td>snapshot export (이미지 생성은 웹 또는 Edge)</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h3 id="35-에셋그래픽-파이프라인-p0">3.5 에셋·그래픽 파이프라인 (P0)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>단계</th>
+<th>작업</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>G1</td>
+<td>팔레트·타일 규격 문서화 (16px grid)</td>
+</tr>
+<tr>
+<td>G2</td>
+<td>fish 1종 × swim/idle/scatter 시트</td>
+</tr>
+<tr>
+<td>G3</td>
+<td>배경 레이어 3종 (far/mid/near)</td>
+</tr>
+<tr>
+<td>G4</td>
+<td>UI 아이콘 픽셀 24px</td>
+</tr>
+<tr>
+<td>G5</td>
+<td><code>atlas.json</code> + 용량 예산 검사 (&lt; 2MB/테마)</td>
+</tr>
+</tbody></table></div>
+<p><strong>최적화</strong></p>
+<ul>
+<li>배경: WebP quality 80, 반복 타일  </li>
+<li>애니: 12 FPS 논리, 30 FPS 보간 없음(순수 프레임)  </li>
+<li>오디오: MVP 제외</li>
+</ul>
+<hr>
+<h3 id="36-devops품질-p1">3.6 DevOps·품질 (P1)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>도구</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Repo</td>
+<td>monorepo (<code>apps/web</code>, <code>apps/android</code>, <code>apps/ios</code>) 또는 multi-repo</td>
+</tr>
+<tr>
+<td>CI</td>
+<td>GitHub Actions: web lint/test, android assembleDebug</td>
+</tr>
+<tr>
+<td>Secret</td>
+<td>Vercel env, Supabase dashboard, native는 <code>.env</code> 미포함</td>
+</tr>
+<tr>
+<td>Crash</td>
+<td>Firebase Crashlytics 또는 Sentry (native+web)</td>
+</tr>
+<tr>
+<td>분석</td>
+<td>PostHog / Mixpanel (후속)</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="4-프로토타입-로드맵810주-가안">4. 프로토타입 로드맵(8~10주 가안)</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>주차</th>
+<th>마일스톤</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1~2</td>
+<td>G1<del>G2, B1</del>B2, W1</td>
+</tr>
+<tr>
+<td>3~4</td>
+<td>A1~A2 Android 배경, W2 decorate</td>
+</tr>
+<tr>
+<td>5</td>
+<td>A3 sync, B3</td>
+</tr>
+<tr>
+<td>6</td>
+<td>W3 shop, W4 fishing</td>
+</tr>
+<tr>
+<td>7</td>
+<td>A4 bridge, W5</td>
+</tr>
+<tr>
+<td>8</td>
+<td>I1 widget, QA·배터리 프로파일</td>
+</tr>
+<tr>
+<td>9~10</td>
+<td>버퍼, TestFlight / 내부 APK</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="5-팀역할-분담최소">5. 팀·역할 분담(최소)</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>역할</th>
+<th>담당</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Product</strong></td>
+<td>MVP scope, economy tuning</td>
+</tr>
+<tr>
+<td><strong>Pixel Artist</strong></td>
+<td>시트·배경·UI</td>
+</tr>
+<tr>
+<td><strong>Android</strong></td>
+<td>Wallpaper + bridge</td>
+</tr>
+<tr>
+<td><strong>iOS</strong></td>
+<td>Widget + mirror</td>
+</tr>
+<tr>
+<td><strong>Web</strong></td>
+<td>Next.js 게임 화면</td>
+</tr>
+<tr>
+<td><strong>Backend</strong></td>
+<td>Supabase schema, RLS, RPC</td>
+</tr>
+</tbody></table></div>
+<p>1인 개발 시 순서: <strong>B → W(lobby/decorate) → A(배경) → fishing → iOS widget</strong>.</p>
+<hr>
+<h2 id="6-엔진프레임워크-결정-체크리스트">6. 엔진·프레임워크 결정 체크리스트</h2>
+<p>다음 항목에 <strong>예</strong>가 많으면 <strong>커스텀 2D + Web</strong> 유지, <strong>아니오</strong>가 많으면 <strong>Flutter/React Native</strong> 검토.</p>
+<ul>
+<li><input disabled="" type="checkbox"> 배경이 앱의 핵심 차별점인가? → Native Wallpaper 필수  </li>
+<li><input disabled="" type="checkbox"> 3D·복잡 물리가 필요한가? → 현재 No  </li>
+<li><input disabled="" type="checkbox"> 낚시가 단순 2D 타이밍인가? → Pixi/Canvas 충분  </li>
+<li><input disabled="" type="checkbox"> 팀이 TypeScript에 익숙한가? → Next.js + RN WebView  </li>
+<li><input disabled="" type="checkbox"> APK 50MB 이하를 목표로 하는가? → Unity 비권장</li>
+</ul>
+<hr>
+<h2 id="7-오픈-이슈결정-필요">7. 오픈 이슈(결정 필요)</h2>
+<ol>
+<li><strong>모노레포 vs 분리</strong>: 프로토타입은 <code>web</code> 단독 + <code>android</code> 단독도 가능  </li>
+<li><strong>게스트 플레이</strong>: 익명 auth vs 필수 로그인  </li>
+<li><strong>iOS 1차 출시 범위</strong>: 위젯만 vs 앱+위젯 동시  </li>
+<li><strong>인앱결제</strong>: MVP 제외 여부  </li>
+<li><strong>다국어</strong>: ko만 vs i18n 구조 선반영</li>
+</ol>
+<hr>
+<h2 id="8-산출물-체크리스트구축-완료-정의">8. 산출물 체크리스트(구축 완료 정의)</h2>
+<h3 id="프로토타입-done">프로토타입 Done</h3>
+<ul>
+<li><input disabled="" type="checkbox"> Android 라이브 배경 설치·터치 반응  </li>
+<li><input disabled="" type="checkbox"> Vercel URL에서 꾸미기 저장 → 배경 반영  </li>
+<li><input disabled="" type="checkbox"> Supabase Auth + RLS 통과  </li>
+<li><input disabled="" type="checkbox"> 상점 1회 구매 + 인벤토리 반영  </li>
+<li><input disabled="" type="checkbox"> 낚시 1회 성공 → fish_instances 추가  </li>
+<li><input disabled="" type="checkbox"> README에 로컬 실행·env 설정</li>
+</ul>
+<hr>
+<h2 id="9-관련-문서">9. 관련 문서</h2>
+<ul>
+<li>컨셉·UX: <code>01-앱-컨셉-기획.md</code>  </li>
+<li>플랫폼 한계: <code>03-플랫폼-제약-및-대안.md</code></li>
+</ul>
+
+</section>
+<section class="doc" id="doc03" data-file="03-플랫폼-제약-및-대안.md">
+<h1 id="03-플랫폼-제약-및-설계-대안">03. 플랫폼 제약 및 설계 대안</h1>
+<p>“홈 화면 배경에서 물고기가 돌아다니고, 터치하면 반응한다”는 컨셉을 <strong>Android / iOS 현실</strong>에 맞게 조정하기 위한 문서입니다.</p>
+<hr>
+<h2 id="1-요약-표">1. 요약 표</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>기능</th>
+<th>Android</th>
+<th>iOS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>라이브 배경화면</strong></td>
+<td>✅ WallpaperService</td>
+<td>❌ 서드파티 앱 라이브 배경 불가</td>
+</tr>
+<tr>
+<td><strong>홈 화면 임의 위치 터치 → 게임 반응</strong></td>
+<td>✅ (배경 설정 시)</td>
+<td>❌ (홈은 SpringBoard 제어)</td>
+</tr>
+<tr>
+<td><strong>앱 아이콘 옆·위 홈 영역</strong></td>
+<td>△ 위젯 영역만</td>
+<td>△ WidgetKit 영역만</td>
+</tr>
+<tr>
+<td><strong>잠금 화면 연동</strong></td>
+<td>△ 제조사·OS별</td>
+<td>△ 위젯·Live Activity 수준</td>
+</tr>
+<tr>
+<td><strong>배터리 백그라운드 연산</strong></td>
+<td>△ 제한적, FPS 조절 필수</td>
+<td>△ 위젯 타임라인 갱신 제한</td>
+</tr>
+</tbody></table></div>
+<p><strong>결론</strong>: <strong>Android = 풀 비전</strong>, <strong>iOS = 위젯 + 앱 내 미러 + (선택) Live Activity</strong> 로 <strong>체감 동등화</strong>를 노린다.</p>
+<hr>
+<h2 id="2-android">2. Android</h2>
+<h3 id="21-가능한-것">2.1 가능한 것</h3>
+<ul>
+<li><strong>Live Wallpaper</strong>: <code>WallpaperService.Engine</code>에서 Surface 렌더  </li>
+<li><strong>터치</strong>: <code>onTouchEvent</code> → 파문·scatter 구현 가능  </li>
+<li><strong>홈 위젯</strong>: <code>AppWidgetProvider</code>로 수족관 일부 + 탭 인텐트  </li>
+<li><strong>앱 아이콘과의 관계</strong>: 라이브 배경은 <strong>아이콘 뒤 레이어</strong>; 아이콘 자체를 “수족관 안”에 넣는 것은 <strong>런처 커스텀</strong>이 아니면 불가 → <strong>위젯으로 ‘수족관 블록’ 배치</strong>가 현실적</li>
+</ul>
+<h3 id="22-주의">2.2 주의</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>이슈</th>
+<th>대응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>배터리</td>
+<td>화면 OFF 시 <code>onVisibilityChanged(false)</code> → 애니 정지</td>
+</tr>
+<tr>
+<td>메모리 kill</td>
+<td>상태는 Supabase+로컬 캐시, 재시작 시 복원</td>
+</tr>
+<tr>
+<td>제조사 절전</td>
+<td>WorkManager + 사용자 “배터리 예외” 안내</td>
+</tr>
+<tr>
+<td>Play 정책</td>
+<td>배경 권한·데이터 수집 고지</td>
+</tr>
+</tbody></table></div>
+<h3 id="23-앱-아이콘-화면에-수족관-배치-해석">2.3 “앱 아이콘 화면에 수족관 배치” 해석</h3>
+<p>사용자 의도는 다음 중 하나일 수 있음:</p>
+<ol>
+<li><strong>라이브 배경</strong>으로 아이콘 뒤 전체가 수족관 → <strong>Android 표준</strong>  </li>
+<li><strong>홈에 큰 위젯</strong>으로 수족관 블록 → <strong>아이콘과 나란히 배치</strong>, 터치는 위젯 내부  </li>
+<li><strong>런처 테마</strong> 수준 통합 → MVP 범위 밖</li>
+</ol>
+<p><strong>권장 MVP</strong>: (1) + (2) 병행 — 배경은 몰입, 위젯은 퀵 먹이·터치 반응.</p>
+<hr>
+<h2 id="3-ios">3. iOS</h2>
+<h3 id="31-불가에-가까운-것">3.1 불가에 가까운 것</h3>
+<ul>
+<li>서드파티 <strong>인터랙티브 라이브 홈 배경</strong>(Android Wallpaper 동등)  </li>
+<li>홈 화면 <strong>빈 공간 탭</strong>을 앱이 가로채 <strong>물고기 반응</strong></li>
+</ul>
+<h3 id="32-가능한-대안">3.2 가능한 대안</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>대안</th>
+<th>설명</th>
+<th>터치 반응</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>중/대형 위젯</strong></td>
+<td>수족관 스냅샷 또는 저주기 애니</td>
+<td>iOS 17+ <strong>interactive widget</strong> 제한적</td>
+</tr>
+<tr>
+<td><strong>App Intent</strong></td>
+<td>“먹이 주기” 버튼</td>
+<td>버튼 단위</td>
+</tr>
+<tr>
+<td><strong>앱 내 Mirror Aquarium</strong></td>
+<td>앱 실행 시 전체화면 수족관 + 터치</td>
+<td><strong>풀 인터랙션</strong></td>
+</tr>
+<tr>
+<td><strong>Live Activity</strong></td>
+<td>잠금/다이나믹 아일랜드에 상태</td>
+<td>탭 → 앱 딥링크</td>
+</tr>
+<tr>
+<td><strong>정적 배경</strong></td>
+<td>사용자가 스크린샷 저장</td>
+<td>반응 없음, 비권장</td>
+</tr>
+</tbody></table></div>
+<h3 id="33-ios-ux-카피사용자-기대-관리">3.3 iOS UX 카피(사용자 기대 관리)</h3>
+<ul>
+<li>마케팅: “<strong>항상 보이는 수족관 위젯</strong> + <strong>앱에서 만지는 수족관</strong>”  </li>
+<li>Android와 동일 카피는 <strong>리젝/불만</strong> 위험 → 스토어 설명 분리</li>
+</ul>
+<hr>
+<h2 id="4-터치-반응-구현-매트릭스">4. 터치 반응 구현 매트릭스</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Surface</th>
+<th>Android</th>
+<th>iOS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Live Wallpaper</td>
+<td>Ripple + fish AI</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Home Widget</td>
+<td>Local tap → RemoteViews update / Activity</td>
+<td>Button / App Intent</td>
+</tr>
+<tr>
+<td>App Mirror View</td>
+<td>동일 엔진 공유</td>
+<td>SpriteKit / Canvas</td>
+</tr>
+<tr>
+<td>Web Fishing</td>
+<td>Pixi pointer</td>
+<td>동일</td>
+</tr>
+</tbody></table></div>
+<p><strong>엔진 공유 전략</strong>: 반응 로직(<code>scatter</code>, <code>ripple</code>)을 <strong>TypeScript(JSON 규칙)</strong> 또는 <strong>Kotlin/Swift 공통 스펙</strong>으로 문서화 후 양쪽 포팅.</p>
+<hr>
+<h2 id="5-하이브리드-연동">5. 하이브리드 연동</h2>
+<pre><code>Web (꾸미기 저장)
+    → Supabase aquariums.version++
+    → Native: SyncWorker or push(deep link)
+    → Wallpaper/Widget: snapshot + sprite manifest reload
+</code></pre>
+<p><strong>iOS 위젯</strong>은 전체 실시간 애니보다 <strong>스냅샷 + 하루 N회 갱신</strong>이 안정적.</p>
+<hr>
+<h2 id="6-스토어권한">6. 스토어·권한</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>권한</th>
+<th>Android</th>
+<th>iOS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>배경 설정</td>
+<td><code>SET_WALLPAPER</code></td>
+<td>해당 없음</td>
+</tr>
+<tr>
+<td>네트워크</td>
+<td>INTERNET</td>
+<td>App Transport Security</td>
+</tr>
+<tr>
+<td>알림(선택)</td>
+<td>POST_NOTIFICATIONS</td>
+<td>User permission</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="7-제품-의사결정-권고">7. 제품 의사결정 권고</h2>
+<ol>
+<li><strong>1차 출시</strong>: Android 풀 기능 MVP  </li>
+<li><strong>iOS 동시 출시</strong>: 위젯 + Mirror + Web 동일 계정  </li>
+<li><strong>“아이콘 화면 터치 반응”</strong>: Android는 배경+위젯, iOS는 위젯·앱으로 <strong>기능명 분리</strong>  </li>
+<li><strong>절전 모드</strong>: 기본 ON, 설정에서 “생동감 모드”</li>
+</ol>
+<hr>
+<h2 id="8-참고-키워드구현-조사용">8. 참고 키워드(구현 조사용)</h2>
+<ul>
+<li>Android: <code>WallpaperService</code>, <code>SurfaceHolder</code>, <code>RenderEffect</code> ripple  </li>
+<li>iOS: <code>WidgetKit</code>, <code>AppIntent</code>, <code>ActivityKit</code>, <code>WKWebView</code> message handlers  </li>
+<li>Web: <code>postMessage</code>, Supabase Realtime <code>aquariums</code> subscribe</li>
+</ul>
+
+</section>
+<section class="doc" id="doc04" data-file="04-서비스-고도화-및-리스크-대응.md">
+<h1 id="04-서비스-고도화-및-리스크-대응-통합-확정본">04. 서비스 고도화 및 리스크 대응 (통합 확정본)</h1>
+<blockquote>
+<p><strong>작성 경위</strong>: <code>01</code><del><code>03</code> 기획안 + BM/UX/디자인 보강안에 대한 <strong>기술·기획 교차검토</strong> 결과를 통합한 문서.
+<strong>우선순위 규칙</strong>: 본 문서가 <code>01</code></del><code>03</code>과 충돌하면 <strong>이 문서를 최신 결정으로 우선</strong>한다.</p>
+</blockquote>
+<hr>
+<h2 id="0-이-문서에서-확정하는-핵심-결정-tldr">0. 이 문서에서 확정하는 핵심 결정 (TL;DR)</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>확정</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>게임 노선</strong></td>
+<td><strong>Route A — Cozy / Zen</strong> (물고기 죽음 없음, 스트레스 제로형)</td>
+</tr>
+<tr>
+<td><strong>플랫폼 전략</strong></td>
+<td><strong>Android-first 풀비전</strong>, iOS는 위젯+미러로 <em>체감 동등화</em></td>
+</tr>
+<tr>
+<td><strong>셸 구조</strong></td>
+<td><strong>얇은 네이티브 셸 + WebView</strong> (React Native 미채용)</td>
+</tr>
+<tr>
+<td><strong>배경 렌더러</strong></td>
+<td><strong>OpenGL ES 2.0</strong> 확정 + 셰이더 게이팅 정책</td>
+</tr>
+<tr>
+<td><strong>수익 모델</strong></td>
+<td><strong>코스메틱(테마) 중심 + 구독 + 리워드광고</strong>, 가챠 대신 <strong>확정 분양</strong></td>
+</tr>
+<tr>
+<td><strong>코어 메타 4축</strong></td>
+<td>수집(도감) · 꾸미기 · 소셜(자랑) · 감정소유</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>착수 전 반드시 결정해야 할 항목</strong>은 <a href="#81-%EC%B0%A9%EC%88%98-%EC%A0%84-%ED%95%84%EC%88%98-%EA%B2%B0%EC%A0%95">§8.1</a>에, 출시 전 조정할 다이얼은 <a href="#82-%EC%B6%9C%EC%8B%9C-%EC%A0%84-%EC%A1%B0%EC%A0%95-%EB%8B%A4%EC%9D%B4%EC%96%BC">§8.2</a>에 정리.</p>
+</blockquote>
+<hr>
+<h2 id="1-프로젝트-정체성-및-노선-확정">1. 프로젝트 정체성 및 노선 확정</h2>
+<h3 id="11-route-a-cozy--zen-확정">1.1 Route A (Cozy / Zen) 확정</h3>
+<p>《어비스리움》, 《네코 아츠메》 계열의 <strong>스트레스 제로(0)형 힐링·방치성</strong>을 핵심 가치로 삼는다. 다마고치식 압박/죽음 모델은 배제한다.</p>
+<ul>
+<li><strong>물고기 사망 메커니즘 전면 배제</strong>: 장시간 방치해도 물고기는 <strong>절대 죽지 않는다.</strong></li>
+<li>죽음 모델은 <em>불안 과금(다크 패턴)</em> 으로 흐르기 쉽고, &quot;항상 보이는 힐링 애완&quot;이라는 정체성과 정면 충돌하므로 채택하지 않는다.</li>
+</ul>
+<h3 id="12-방치-패널티--불만족-상태-죽음-없는-압박">1.2 방치 패널티 = &quot;불만족 상태&quot; (죽음 없는 압박)</h3>
+<p>먹이 고갈/수질 악화 시 물고기는 <strong>기면·수면·불만족</strong> 상태로 진입한다.</p>
+<ul>
+<li><strong>외형</strong>: 색이 반투명해지고, 바닥·산호 뒤로 숨어 움직임 최소화.</li>
+<li><strong>시스템</strong>: 코인(일반 재화) <strong>생산 중단 + 성장 정지</strong>.</li>
+<li><strong>회복</strong>: <em>한 번의 먹이/청소로 즉시 회복</em>되도록 마찰을 최소화(코지 원칙). 죄책감 연출 금지.</li>
+</ul>
+<h3 id="13-구독아쿠아-패스-월-1900원--가치-재정의">1.3 구독(아쿠아 패스, 월 1,900원) — 가치 재정의</h3>
+<p>&quot;사망 불안&quot;이 아니라 **&quot;쾌적함과 유대감의 극대화&quot;**를 판다.</p>
+<ul>
+<li>오프라인 캡 6h → <strong>24h</strong> 확장</li>
+<li><strong>자동 관리 봇(우렁이 장식)</strong>: 불만족 상태에 빠지지 않도록 <strong>버퍼 제공</strong>(편의·성장 가속). <em>물고기를 살리는 기능이 아님.</em></li>
+<li>일일 낚시 스태미나 +2, 상점 프리미엄 슬롯 +1</li>
+<li>⚠️ <strong>인지할 트레이드오프</strong>: 구독자는 불만족 상태를 거의 보지 않으므로 데일리 케어 루프가 일부 잠식된다. 구독자의 재방문 동기는 <strong>수집·꾸미기·소셜</strong>이 담당하도록 설계.</li>
+</ul>
+<h3 id="14-아트-디렉션-비전">1.4 아트 디렉션 비전</h3>
+<p><strong>&quot;노스탤직 레트로 코지-젠 (Nostalgic Retro Cozy-Zen)&quot;</strong></p>
+<ul>
+<li>얕은 플래시게임 느낌 배제. <strong>GBA/고사양 아케이드급 밀도 높은 클래식 도트</strong> 기조.</li>
+<li>그 위에 <strong>현대적 수중 라이팅(God Rays·굴절·발광)</strong> 을 얹어 <em>고전 감성 + 현대적 세련</em>의 균형.</li>
+</ul>
+<hr>
+<h2 id="2-네이티브-레이어-제약과-우회-엔지니어링-현실성">2. 네이티브 레이어: 제약과 우회 (엔지니어링 현실성)</h2>
+<blockquote>
+<p><code>03</code> 문서의 플랫폼 한계 분석을 전제로, 기획 보강안에서 <strong>네이티브 샌드박스가 실제로는 못 하는 연출</strong>을 실현 가능한 형태로 교정한다.</p>
+</blockquote>
+<h3 id="21-셸-구조-얇은-네이티브--webview-rn-미채용">2.1 셸 구조: 얇은 네이티브 + WebView (RN 미채용)</h3>
+<ul>
+<li>라이브 배경은 <strong>Kotlin <code>WallpaperService</code>가 별도 컴포넌트</strong>로 구동되므로, RN으로 만들 수 없다.</li>
+<li>앱 UI는 전부 <strong>Vercel 웹앱(WebView)</strong>. 따라서 RN 런타임을 떠안을 이유가 없다.</li>
+<li>→ <strong>얇은 네이티브 셸(Kotlin Activity + WebView)</strong> + 별도 Kotlin 배경/위젯 모듈로 확정. (APK 경량화·<code>&lt; 50MB</code> 목표와 정합)</li>
+</ul>
+<h3 id="22-배경-앱-ux-브리지-위젯--알림-오버레이더블탭-폐기">2.2 배경-앱 UX 브리지: 위젯 + 알림 (오버레이/더블탭 폐기)</h3>
+<p><code>SYSTEM_ALERT_WINDOW</code>(다른 앱 위에 그리기) 심사 리스크 + 런처별 터치 가로채기 때문에 <strong>&quot;배경 더블탭 → 플로팅 패널&quot;은 폐기</strong>한다.</p>
+<ul>
+<li><strong>대안 1 (P0) — 홈 위젯 스마트 버튼</strong>: <code>RemoteViews</code>에 <code>[먹이주기]</code>/<code>[청소하기]</code> 버튼. 탭 → <code>PendingIntent</code> → 백그라운드 서비스가 로컬 캐시 변경.</li>
+<li><strong>대안 2 (P1) — 진행형 알림 액션</strong>: 상단 알림창에 &#39;Aqua Desk 제어센터&#39; 상주 노티 + 액션 버튼. (Android 13+ <code>POST_NOTIFICATIONS</code> 런타임 권한 필요)</li>
+</ul>
+<h3 id="23--핵심-이음새-비가시-상태-먹이--크로스-프로세스-ipc">2.3 ⚠️ 핵심 이음새: &quot;비가시 상태 먹이&quot; + 크로스 프로세스 IPC</h3>
+<p>가장 흔히 누락되어 **&quot;먹였는데 배경은 그대로&quot;**가 되는 지점. 반드시 설계에 못 박는다.</p>
+<ol>
+<li><strong>비가시 시 애니 큐잉</strong>: 위젯/알림으로 먹이를 줄 때 홈의 라이브 배경은 가려져 <code>onVisibilityChanged(false)</code>(= <a href="#24-%EB%A0%8C%EB%8D%94%EB%9F%AC-%ED%99%95%EC%A0%95--%EC%85%B0%EC%9D%B4%EB%8D%94-%EA%B2%8C%EC%9D%B4%ED%8C%85-%EC%A0%95%EC%B1%85">§2.4</a> 표에서 0 FPS) 상태다. → 상태 변경은 캐시에 즉시 커밋하되, <strong>연출은 큐에 적재 후 다음 <code>onVisibilityChanged(true)</code>(홈 복귀) 때 재생</strong>.</li>
+<li><strong>IPC 명시</strong>: 위젯/알림 처리 컴포넌트가 <code>WallpaperService.Engine</code>에 &quot;캐시 변경, 리로드&quot;를 알리는 채널이 필요. → <strong>설계 확정</strong>: <strong>동일 프로세스</strong>(<code>android:process</code> 미지정) + <strong>ContentProvider 기반 <code>ContentObserver</code></strong>(LocalBroadcast는 프로세스 경계·deprecated 문제로 폐기). 상세 <a href="../%EC%84%A4%EA%B3%84%EC%84%9C/03-%EB%84%A4%EC%9D%B4%ED%8B%B0%EB%B8%8C-%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C-%EC%84%A4%EA%B3%84.md">설계서 03</a>.</li>
+</ol>
+<h3 id="24-렌더러-확정--셰이더-게이팅-정책">2.4 렌더러 확정 + 셰이더 게이팅 정책</h3>
+<ul>
+<li><strong>OpenGL ES 2.0</strong> 파이프라인을 네이티브 배경 렌더러 기본 스펙으로 <strong>강제</strong>(Android 10 / API 29+). Canvas 2D로는 풀스크린 프래그먼트 셰이더(God Rays·굴절) 불가.</li>
+<li>터치 ripple은 <strong>3프레임 스프라이트 파티클</strong>로 구현(<code>RenderEffect</code>/AGSL는 API 31/33+라 최소 SDK에서 불가 → 회피).</li>
+<li>배터리/<code>CPU &lt; 5%</code>·<code>RAM &lt; 30MB</code> 목표를 위한 <strong>게이팅 정책</strong>:</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>기기 상태</th>
+<th>셰이더 구동</th>
+<th>FPS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>런처 포그라운드</td>
+<td>God Rays + 굴절 풀가동</td>
+<td>30 (터치 시 일시 상향, 디스플레이 주사율 캡)</td>
+</tr>
+<tr>
+<td>장시간 미터치</td>
+<td>굴절 일시정지, God Rays 루프 연장</td>
+<td>15</td>
+</tr>
+<tr>
+<td>절전 모드 ON</td>
+<td>모든 셰이더 OFF, 순수 도트만</td>
+<td>15</td>
+</tr>
+<tr>
+<td>화면 OFF / 타 앱</td>
+<td><code>onVisibilityChanged(false)</code> 즉시 감지</td>
+<td><strong>0 (렌더 정지)</strong></td>
+</tr>
+</tbody></table></div>
+<h3 id="25-터치제스처의-런처-의존성">2.5 터치/제스처의 런처 의존성</h3>
+<p>라이브 배경의 <code>onTouchEvent</code>/롱탭은 <strong>런처가 가로챌 수 있다</strong>(홈 롱프레스 = 위젯 추가 메뉴 등).</p>
+<ul>
+<li><strong>이름표(2초 롱탭)</strong> 같은 정밀 제스처의 <strong>1차 UX는 앱 미러 뷰</strong>(확실)에 두고, 배경 롱탭은 <em>best-effort 보너스</em>로 취급.</li>
+</ul>
+<h3 id="26-ios-대안--app-store-42-리스크">2.6 iOS 대안 + App Store 4.2 리스크</h3>
+<ul>
+<li>iOS는 서드파티 라이브 배경 불가 → <strong>위젯(iOS 16 정적 / 17+ 인터랙티브 버튼) + 앱 내 Mirror + (옵션)Live Activity</strong>로 체감 동등화.</li>
+<li>⚠️ <strong>App Store 4.2 (Minimum Functionality)</strong>: 앱이 <em>원격 웹뷰 래퍼</em>로만 보이면 리젝 위험. → 위젯·Mirror·App Intent 등 <strong>네이티브 기능을 충분히</strong> 넣어 단순 래퍼가 아님을 입증. 오프라인 동작 고려(웹앱 다운 시 Mirror 빈 화면 방지).</li>
+</ul>
+<hr>
+<h2 id="3-인게임-경제-및-bm">3. 인게임 경제 및 BM</h2>
+<h3 id="31-재화-흐름-taps--sinks">3.1 재화 흐름 (Taps &amp; Sinks)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>재화</th>
+<th>획득(Taps)</th>
+<th>소비(Sinks)</th>
+<th>성격</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>코인</strong>(일반)</td>
+<td>오프라인 방치, 먹이주기, 일반 낚시, <strong>리워드광고</strong></td>
+<td>일반 장식, 슬롯 확장, 상점 리프레시</td>
+<td>인게임 수급</td>
+</tr>
+<tr>
+<td><strong>진주</strong>(유료/희귀)</td>
+<td>IAP, 도감 달성, 일일 도전</td>
+<td>프리미엄 테마, 한정 어종 <strong>확정 분양</strong>, 아쿠아 패스</td>
+<td>핵심 매출원</td>
+</tr>
+<tr>
+<td><strong>스태미나</strong></td>
+<td>시간 충전(일일 N회), <strong>리워드광고</strong></td>
+<td>낚시 진입</td>
+<td>세션 제한</td>
+</tr>
+<tr>
+<td><strong>하트</strong>(소셜)</td>
+<td>친구 어항 버블탭 선물</td>
+<td><em>소량 상점 교환</em></td>
+<td><a href="#36-%ED%99%94%ED%8F%90-%EA%B0%9C%EC%88%98-%EA%B4%80%EB%A6%AC-%ED%95%98%ED%8A%B8-%EC%B2%98%EB%A6%AC">§3.6</a> 참조</td>
+</tr>
+</tbody></table></div>
+<h3 id="32-프리미엄-테마--코어-bm">3.2 프리미엄 테마 = 코어 BM</h3>
+<p>테마 변경 시 그래픽 + <strong>네이티브 셰이더 무드</strong>가 함께 바뀐다. (예: 심해(기본) / 사이버펑크 네온 / 에메랄드 포레스트)</p>
+<ul>
+<li>생산비 폭발을 막는 구현 전략은 <a href="#5-%EC%BD%98%ED%85%90%EC%B8%A0-%EC%83%9D%EC%82%B0%EC%84%B1-%EC%A0%84%EB%9E%B5-%EC%95%84%ED%8A%B8-%EB%B0%A9%ED%8F%AD">§5</a>에 분리.</li>
+</ul>
+<h3 id="33-구독-아쿠아-패스">3.3 구독: 아쿠아 패스</h3>
+<p><a href="#13-%EA%B5%AC%EB%8F%85%EC%95%84%EC%BF%A0%EC%95%84-%ED%8C%A8%EC%8A%A4-%EC%9B%94-1900%EC%9B%90--%EA%B0%80%EC%B9%98-%EC%9E%AC%EC%A0%95%EC%9D%98">§1.3</a>에서 확정(편의·유대 판매, 죽음 방지 아님).</p>
+<h3 id="34-iap-가격-사다리-보정--진주-팩--스타터팩--상품">3.4 IAP 가격 사다리 (보정) — 진주 팩 + 스타터팩 + 상품</h3>
+<blockquote>
+<p>기준: <strong>1 진주 ≈ 120원</strong>. 수치는 별첨 경제표에서 최종 튜닝.</p>
+</blockquote>
+<p><strong>(A) 진주 팩 — 보너스 체증형 (매출의 토대, 신규 추가)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>가격(원)</th>
+<th>진주</th>
+<th>보너스</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1,200</td>
+<td>10</td>
+<td>–</td>
+</tr>
+<tr>
+<td>5,500</td>
+<td>50</td>
+<td>+9%</td>
+</tr>
+<tr>
+<td>12,000</td>
+<td>115</td>
+<td>+15%</td>
+</tr>
+<tr>
+<td>25,000</td>
+<td>260</td>
+<td>+30%</td>
+</tr>
+<tr>
+<td>49,000</td>
+<td>540</td>
+<td>+35% (고래)</td>
+</tr>
+</tbody></table></div>
+<p><strong>(B) 스타터팩 (첫구매 1회, 신규 추가)</strong>: 2,900원 — 진주 30 + 한정 장식 + 코인 보너스.</p>
+<p><strong>(C) 상품 — 가격 레벨 교정</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>상품</th>
+<th>제미나이 원안</th>
+<th><strong>교정안</strong></th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>테마 스킨(핵심·반복)</td>
+<td>진주 150 (18,000원)</td>
+<td><strong>진주 50<del>80 (6,000</del>9,600원)</strong></td>
+<td>$13는 충동구매 대역($2.99<del>6.99) 대비 2</del>3배 → 전환율 저하</td>
+</tr>
+<tr>
+<td>한정/번들 테마</td>
+<td>–</td>
+<td>진주 120~150</td>
+<td>18,000원+는 <em>한정/번들</em>에 배치</td>
+</tr>
+<tr>
+<td>신화 히어로 어종(확정 분양)</td>
+<td>진주 400 (48,000원)</td>
+<td><strong>유지</strong></td>
+<td>고래 앵커. 가챠 아닌 <em>확정</em> 판매 = Route A 정합</td>
+</tr>
+</tbody></table></div>
+<h3 id="35-리워드-광고-연계">3.5 리워드 광고 연계</h3>
+<p>캐주얼 매출의 큰 축. <strong>낚시 스태미나 +1</strong>, <strong>오프라인 보상 2배</strong>, <strong>상점 무료 리프레시</strong> 등에 리워드 비디오 연결.</p>
+<h3 id="36-화폐-개수-관리-하트-처리">3.6 화폐 개수 관리 (하트 처리)</h3>
+<p>코인·진주·스태미나 + 하트 = <strong>4종</strong>은 라이트 캐주얼에 인지부하가 크다.
+→ <strong>권장</strong>: 하트를 정식 화폐가 아닌 <em>소셜 카운터</em>로 두고 <strong>일정량 모이면 코인으로 자동 환산</strong>. (별도 상점/환율 신설 회피)</p>
+<hr>
+<h2 id="4-핵심-메타-시스템">4. 핵심 메타 시스템</h2>
+<h3 id="41-수집-메타-진행의-척추">4.1 수집 메타 (진행의 척추)</h3>
+<ul>
+<li><strong>3티어 희귀도</strong>: Common → Rare → Cosmic/Mythic.</li>
+<li><strong>멀티 어항 락인</strong>: 1번 어항 도감 80% 달성 시 코인 소모로 2번 어항 해금 → 종단 콘텐츠.</li>
+<li><strong>도감 마일스톤 버프</strong>: 세트 완성 시 <strong>초당 코인 +5%</strong> 등 패시브.<ul>
+<li>⚠️ <strong>인플레 주의</strong>: 버프 누적이 코인 가치를 희석하므로, <strong>싱크(어항2·3·장식 가격)를 비례 상향</strong>해 균형.</li>
+</ul>
+</li>
+</ul>
+<h3 id="42-꾸미기미학-시스템">4.2 꾸미기·미학 시스템</h3>
+<ul>
+<li>단순 슬롯 배치를 넘어 <strong>물-색감/조명/무드/테마</strong>가 어항 전체를 바꿈.</li>
+<li><strong>어항 평점(풍수/감성 점수)</strong> 도입 → <em>예쁘게 꾸미면 보상</em>(코인 보너스/도감 점수). 미학을 진행으로 전환.</li>
+<li>물고기-식물 <strong>시너지</strong>로 수집과 꾸미기를 연결.</li>
+</ul>
+<h3 id="43-소셜--바이럴-루프--보안">4.3 소셜 / 바이럴 루프 (+ 보안)</h3>
+<ul>
+<li><strong>딥링크 공유</strong>: 어항 스냅샷 카드 + 딥링크를 SNS로 내보내기.<ul>
+<li>⚠️ <strong>보안 교정</strong>: 링크에 <strong>raw <code>user_id</code> 노출 금지</strong>(RLS 주체 키). → <strong>불투명 share token</strong>(매핑 테이블) 발급.</li>
+</ul>
+</li>
+<li><strong>방문 + 버블탭</strong>: 친구 어항을 웹 뷰어로 미러링 → 화면 탭으로 <strong>하트 기포</strong> 선물. 친구가 <em>다음 배경 sync/visibility 때</em> 하트 파문 + 선물박스 수령.<ul>
+<li>📌 &quot;다음 홈 켤 때 즉시&quot;가 아니라 <strong>다음 동기화 시점</strong>임을 명확히(즉시성 원하면 FCM 푸시로 sync nudge).</li>
+<li>어뷰징 방지: 하트 선물 <strong>레이트 리밋 / 친구 한정</strong> 고려.</li>
+</ul>
+</li>
+</ul>
+<h3 id="44-시스템적-감정-소유-이름--성격">4.4 시스템적 감정 소유 (이름 · 성격)</h3>
+<ul>
+<li><strong>이름 짓기</strong>: 개체 인스턴스에 닉네임. 배경 2초 롱탭 시 이름표 팝업(단, <a href="#25-%ED%84%B0%EC%B9%98%EC%A0%9C%EC%8A%A4%EC%B2%98%EC%9D%98-%EB%9F%B0%EC%B2%98-%EC%9D%98%EC%A1%B4%EC%84%B1">§2.5</a> — 1차는 미러 뷰).</li>
+<li><strong>고유 성격(Nature Traits)</strong> = FSM 발동 가중치:<ul>
+<li><strong>겁쟁이</strong>: Scatter 범위 2배</li>
+<li><strong>먹보</strong>: 먹이 이동속도 1.5배</li>
+<li><strong>호기심</strong>: Peek 확률 +30%</li>
+<li><strong>외톨이</strong>: 군집 이탈, 외곽 단독 패트롤</li>
+</ul>
+</li>
+</ul>
+<h3 id="45-낮밤-환경-사이클-전-테마-코어">4.5 낮/밤 환경 사이클 (전 테마 코어)</h3>
+<p>특정 테마 전유물이 아닌 <strong>전 테마 기본 시스템</strong>으로 격상.</p>
+<ul>
+<li>기기 로컬 시간 기준 06:00–18:00 주간 / 18:00–06:00 야간.</li>
+<li>야간: GL 렌더러가 다크 인디고 오버레이 + <strong>물고기 눈/야광 오브젝트만 Additive 블렌딩</strong>으로 점등.</li>
+<li>📌 <strong>하드컷 대신 30~60분 dusk/dawn 보간</strong> + 설정에서 고정(항상 주간/야간) 오버라이드 제공.</li>
+</ul>
+<hr>
+<h2 id="5-콘텐츠-생산성-전략-아트-방폭">5. 콘텐츠 생산성 전략 (아트 방폭)</h2>
+<p>테마 × 어종 × 모션의 <strong>곱셈 폭발</strong>을 막기 위한 전략. (BM 전제 조건)</p>
+<h3 id="51--3단-분리--팔레트-스왑만으로는-부족">5.1 ⚠️ 3단 분리 — 팔레트 스왑만으로는 부족</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>계층</th>
+<th>기법</th>
+<th>비용</th>
+<th>적용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>① <strong>컬러 스왑</strong></td>
+<td>LUT/색상 시프트 셰이더</td>
+<td>거의 0</td>
+<td><em>모든</em> 어종의 테마별 색 변조</td>
+</tr>
+<tr>
+<td>② <strong>테마 FX 패스</strong></td>
+<td>Additive glow/bloom 셰이더</td>
+<td>저렴(GL)</td>
+<td>발광·홀로그램 등 <em>형태가 아닌 빛</em> 효과 (제미나이 안에서 누락됐던 계층)</td>
+</tr>
+<tr>
+<td>③ <strong>전용 도트</strong></td>
+<td>신규 스프라이트</td>
+<td>비쌈</td>
+<td><strong>히어로 어종 1~2종 한정</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>&quot;사이버네틱 스킨/홀로그램 산호&quot;는 ①(색)이 아니라 ②(빛)다. ②를 명시하지 않으면 ③(고비용 아트)로 흘러간다.</p>
+</blockquote>
+<h3 id="52-스켈레톤-템플릿--줄여주는-것은-로직이지-드로잉이-아님">5.2 스켈레톤 템플릿 — 줄여주는 것은 &quot;로직&quot;이지 &quot;드로잉&quot;이 아님</h3>
+<ul>
+<li>어종을 <strong>3형(방추형·원반형·장형)</strong> 으로 규격화, 동일형은 Idle/Scatter/Peek/Yawning의 <strong>프레임 진행·트랜스폼 로직 100% 공유</strong>.</li>
+<li>⚠️ <strong>현실</strong>: 픽셀 프레임은 결국 어종마다 <em>그려야</em> 한다(&quot;정점 치환&quot;식 메시 디폼은 <code>01</code>/<code>02</code>의 &quot;순수 프레임·보간 없음&quot;과 충돌). → 템플릿의 이득은 <strong>일관성 + 엔지니어링 시간</strong>이고, <strong>드로잉 공수는 거의 안 줄어든다.</strong> 아티스트 캐파 산정에 반영.</li>
+</ul>
+<h3 id="53-히어로-어종-집중">5.3 히어로 어종 집중</h3>
+<p>테마 시그니처가 되는 최고 희귀도 <strong>히어로 어종 1~2종</strong>에만 전용 도트(③)를 집중. 나머지 롱테일은 ①+②로 처리.</p>
+<hr>
+<h2 id="6-낚시-미니게임">6. 낚시 미니게임</h2>
+<h3 id="61-4단계-플로우">6.1 4단계 플로우</h3>
+<pre><code>[캐스팅] → [입질 대기] → [릴링(줄다리기)] → [결과/보상]
+ 게이지 타이밍   &quot;!&quot; 1.0s 내 탭   그린존 유지(탭&amp;홀드)   서버 검증
+</code></pre>
+<ul>
+<li><strong>캐스팅</strong>: 힘 게이지, Perfect 존 적중 시 <strong>희귀종 확률 +10%</strong></li>
+<li><strong>입질</strong>: 찌 가라앉음 + &quot;!&quot; → <strong>1.0초 내</strong>(기존 0.5초에서 완화, 캐주얼·중장년 배려) 탭</li>
+<li><strong>릴링</strong>: 무작위 이동 그린존에 찌를 <strong>3초 유지</strong>(탭/홀드 ↑, 떼면 ↓). 상·하단 끝 = 실패</li>
+</ul>
+<h3 id="62-스킬--보상-반영">6.2 스킬 → 보상 반영</h3>
+<p>보상이 100% 서버 RNG면 조작이 무의미. → <strong>2축 스킬 매핑</strong>:</p>
+<ul>
+<li>캐스팅 Perfect → <strong>어종 희귀도 확률</strong></li>
+<li>릴링 Time-in-Zone ≥ 90% → <strong>&#39;Perfect Catch&#39;</strong>, 해당 어종 크기/무게 <strong>상위 10% 최대어 확정</strong></li>
+</ul>
+<h3 id="63--optimistic-ui--서버-정합-규칙">6.3 ⚠️ Optimistic UI + 서버 정합 규칙</h3>
+<ul>
+<li>릴링 성공 즉시 <strong>선제 성공 연출</strong>(물고기 들어올리기 1.5~2초) 구동, 그동안 <code>fishing-resolve</code> Edge Function 통신.</li>
+<li><strong>불변 규칙</strong>: 서버는 <strong>&quot;무엇을 잡았나&quot;만</strong> 결정하고 <strong>&quot;잡았나/못 잡았나&quot;는 절대 뒤집지 않는다.</strong> (성공 연출 후 &quot;사실 실패&quot; 금지)</li>
+<li><strong>실패 폴백</strong>: Edge Function 호출 실패 시 <strong>로컬 임시 지급 → 재동기화 큐잉</strong>. 통신 단절로 잡은 물고기가 증발하지 않도록.</li>
+</ul>
+<hr>
+<h2 id="7-통합-리스크-레지스터">7. 통합 리스크 레지스터</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>리스크</th>
+<th>영향</th>
+<th>대응</th>
+<th>우선</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>R1</td>
+<td>위젯/알림 먹이 시 배경 비가시 → 연출 미표시</td>
+<td>핵심 UX 무력화</td>
+<td>애니 큐잉 + visibility 재생 + IPC 명시 (<a href="#23--%ED%95%B5%EC%8B%AC-%EC%9D%B4%EC%9D%8C%EC%83%88-%EB%B9%84%EA%B0%80%EC%8B%9C-%EC%83%81%ED%83%9C-%EB%A8%B9%EC%9D%B4--%ED%81%AC%EB%A1%9C%EC%8A%A4-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4-ipc">§2.3</a>)</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td>R2</td>
+<td>셰이더 상시 구동 배터리 방전</td>
+<td>배경 유지율 급락</td>
+<td>게이팅 정책 (<a href="#24-%EB%A0%8C%EB%8D%94%EB%9F%AC-%ED%99%95%EC%A0%95--%EC%85%B0%EC%9D%B4%EB%8D%94-%EA%B2%8C%EC%9D%B4%ED%8C%85-%EC%A0%95%EC%B1%85">§2.4</a>)</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td>R3</td>
+<td>iOS App Store 4.2 웹뷰 래퍼 리젝</td>
+<td>iOS 출시 불가</td>
+<td>네이티브 기능 충분 + 오프라인 대응 (<a href="#26-ios-%EB%8C%80%EC%95%88--app-store-42-%EB%A6%AC%EC%8A%A4%ED%81%AC">§2.6</a>)</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td>R4</td>
+<td>테마 핵심가 18,000원 → 전환율 저하</td>
+<td>매출 손실</td>
+<td>가격 교정 + 진주팩 사다리 (<a href="#34-iap-%EA%B0%80%EA%B2%A9-%EC%82%AC%EB%8B%A4%EB%A6%AC-%EB%B3%B4%EC%A0%95--%EC%A7%84%EC%A3%BC-%ED%8C%A9--%EC%8A%A4%ED%83%80%ED%84%B0%ED%8C%A9--%EC%83%81%ED%92%88">§3.4</a>)</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td>R5</td>
+<td>아트 생산비 곱셈 폭발</td>
+<td>콘텐츠 공급 중단</td>
+<td>3단 분리 + 히어로 집중 (<a href="#5-%EC%BD%98%ED%85%90%EC%B8%A0-%EC%83%9D%EC%82%B0%EC%84%B1-%EC%A0%84%EB%9E%B5-%EC%95%84%ED%8A%B8-%EB%B0%A9%ED%8F%AD">§5</a>)</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>R6</td>
+<td>공유 링크 user_id 노출</td>
+<td>열거/추정 표면</td>
+<td>불투명 share token (<a href="#43-%EC%86%8C%EC%85%9C--%EB%B0%94%EC%9D%B4%EB%9F%B4-%EB%A3%A8%ED%94%84--%EB%B3%B4%EC%95%88">§4.3</a>)</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>R7</td>
+<td>도감 버프 누적 인플레</td>
+<td>경제 붕괴</td>
+<td>싱크 비례 상향 (<a href="#41-%EC%88%98%EC%A7%91-%EB%A9%94%ED%83%80-%EC%A7%84%ED%96%89%EC%9D%98-%EC%B2%99%EC%B6%94">§4.1</a>)</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>R8</td>
+<td>네이티브 백그라운드 sync 인증 부재</td>
+<td>앱 안 열면 갱신 안 됨</td>
+<td>네이티브 보안저장소에 세션 토큰 (설계서 참조)</td>
+<td>P1</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="8-결정-로드맵">8. 결정 로드맵</h2>
+<h3 id="81-착수-전-필수-결정">8.1 착수 전 필수 결정</h3>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> <strong>R1 이음새</strong>: 비가시 애니 큐잉 + IPC 방식 → 설계서 03에서 <strong>동일 프로세스 + ContentObserver</strong>로 확정</li>
+<li><input disabled="" type="checkbox"> <strong>R3</strong>: iOS 1차 출시 범위(위젯-only vs 앱+위젯)와 4.2 대응 수위</li>
+<li><input disabled="" type="checkbox"> <strong>R4</strong>: 진주 팩 사다리·스타터팩·테마 가격 확정 (스토어 등록 전)</li>
+<li><input disabled="" type="checkbox"> <strong>R8</strong>: 네이티브 백그라운드 동기화의 인증 모델(토큰 저장)</li>
+</ul>
+<h3 id="82-출시-전-조정-다이얼">8.2 출시 전 조정 다이얼</h3>
+<ul>
+<li><input disabled="" type="checkbox"> 아트 생산 전략 수치화(테마 출시 주기 = 아티스트 캐파)</li>
+<li><input disabled="" type="checkbox"> 화폐 개수(하트 환산 여부)</li>
+<li><input disabled="" type="checkbox"> 경제 밸런싱(소스/싱크 레이트, 도감 버프 vs 싱크)</li>
+<li><input disabled="" type="checkbox"> 잔손질: 낮밤 보간, FPS 캡, 하트 전달 타이밍 안내</li>
+</ul>
+<h3 id="83-미해결--추후">8.3 미해결 / 추후</h3>
+<ul>
+<li>멀티 기기 동기화 충돌 정책(현재 단일 기기 가정, last-write-wins)</li>
+<li>온보딩(라이브 배경 설정 마찰)의 &quot;첫 60초 매직 모먼트&quot; 상세 기획</li>
+<li>시즌 패스/한정 이벤트 운영 캘린더</li>
+</ul>
+<hr>
+<h2 id="9-관련-문서">9. 관련 문서</h2>
+<ul>
+<li>컨셉·UX: <code>01-앱-컨셉-기획.md</code></li>
+<li>구축 단계·스택: <code>02-구축-기획-초안.md</code></li>
+<li>플랫폼 한계: <code>03-플랫폼-제약-및-대안.md</code></li>
+<li><strong>프로토타입 기초 설계</strong>: <code>../설계서/</code> (시스템 아키텍처·데이터모델·네이티브·웹/백엔드·스코프)</li>
+</ul>
+
+</section>
+</main>
+<button id="top" aria-label="맨 위로">↑</button>
+<div id="toast" role="status"></div>
+<script>
+const FILE_MAP = {"README.md":"overview","01-앱-컨셉-기획.md":"doc01","02-구축-기획-초안.md":"doc02","03-플랫폼-제약-및-대안.md":"doc03","04-서비스-고도화-및-리스크-대응.md":"doc04"};
+const tabs = [...document.querySelectorAll('.tab')];
+const docs = [...document.querySelectorAll('.doc')];
+const topBtn = document.getElementById('top');
+const toast = document.getElementById('toast');
+let toastT;
+
+function showToast(msg){
+  toast.textContent = msg; toast.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(()=>toast.classList.remove('show'), 1900);
+}
+
+function activate(id, anchor){
+  const target = document.getElementById(id);
+  if(!target) return;
+  docs.forEach(d=>d.classList.toggle('active', d.id===id));
+  tabs.forEach(t=>t.classList.toggle('active', t.dataset.target===id));
+  const at = tabs.find(t=>t.dataset.target===id);
+  if(at) at.scrollIntoView({inline:'center', block:'nearest'});
+  if(anchor){
+    const el = document.getElementById(anchor);
+    if(el){ requestAnimationFrame(()=>el.scrollIntoView({behavior:'smooth', block:'start'})); return; }
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+tabs.forEach(t=>t.addEventListener('click', ()=>activate(t.dataset.target)));
+
+// Build a per-document collapsible TOC from h2/h3.
+docs.forEach(doc=>{
+  const heads = [...doc.querySelectorAll('h2, h3')];
+  if(heads.length < 2) return;
+  const det = document.createElement('details'); det.className='toc';
+  const sum = document.createElement('summary'); sum.textContent='목차'; det.appendChild(sum);
+  const ul = document.createElement('ul');
+  heads.forEach(h=>{
+    const li=document.createElement('li'); const a=document.createElement('a');
+    a.href='#'+h.id; a.textContent=h.textContent; if(h.tagName==='H3') a.className='lv3';
+    li.appendChild(a); ul.appendChild(li);
+  });
+  det.appendChild(ul);
+  const h1 = doc.querySelector('h1');
+  if(h1 && h1.nextSibling) doc.insertBefore(det, h1.nextSibling); else doc.insertBefore(det, doc.firstChild);
+});
+
+// Intercept link clicks: in-page anchors, cross-doc .md links, external/설계서.
+document.addEventListener('click', e=>{
+  const a = e.target.closest('a'); if(!a) return;
+  const href = a.getAttribute('href') || '';
+  if(href.startsWith('#')){
+    e.preventDefault();
+    const id = decodeURIComponent(href.slice(1));
+    const el = document.getElementById(id);
+    if(!el){ showToast('해당 위치를 찾지 못했어요'); return; }
+    const host = el.closest('.doc');
+    if(host && !host.classList.contains('active')) activate(host.id, id);
+    else el.scrollIntoView({behavior:'smooth', block:'start'});
+    if(det_close(a)) {}
+    return;
+  }
+  // relative links to sibling .md files
+  const base = decodeURIComponent(href.replace(/^\.?\//,'').split('#')[0]);
+  const anchor = href.includes('#') ? decodeURIComponent(href.split('#')[1]) : null;
+  if(FILE_MAP[base]){ e.preventDefault(); activate(FILE_MAP[base], anchor); return; }
+  if(href.includes('설계서')){ e.preventDefault(); showToast('설계서/ 문서는 이 묶음에 포함되지 않았어요'); return; }
+});
+function det_close(a){ const d=a.closest('details.toc'); if(d) d.open=false; return true; }
+
+// floating to-top
+addEventListener('scroll', ()=>{ topBtn.classList.toggle('show', scrollY>500); }, {passive:true});
+topBtn.addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+</script>
+</body>
+</html>

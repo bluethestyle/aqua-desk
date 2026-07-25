@@ -1,0 +1,1365 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Aqua Desk · 디자인 (모바일)</title>
+<style>
+:root{
+  --bg:#fbfaf7; --fg:#23211d; --muted:#6b675e; --line:#e7e3da;
+  --card:#ffffff; --accent:#1f7a6b; --accent-weak:#e3f1ee; --code-bg:#f3f1ea;
+  --thead:#f0ede4; --shadow:0 1px 3px rgba(0,0,0,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#16181a; --fg:#e6e3dc; --muted:#9a958a; --line:#2c2f33;
+    --card:#1e2123; --accent:#4fd1bd; --accent-weak:#16302c; --code-bg:#0f1113;
+    --thead:#24272a; --shadow:0 1px 3px rgba(0,0,0,.4);
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",Roboto,sans-serif;
+  font-size:17px; line-height:1.72; word-break:keep-all; overflow-wrap:anywhere;
+}
+header.app{
+  position:sticky; top:0; z-index:20; background:var(--bg);
+  border-bottom:1px solid var(--line); backdrop-filter:saturate(1.2) blur(6px);
+}
+.app-title{padding:.7rem 1rem .35rem; font-size:.95rem; font-weight:700; letter-spacing:-.01em; color:var(--fg);}
+.app-title small{display:block; font-weight:500; color:var(--muted); font-size:.74rem; margin-top:2px;}
+nav.tabs{display:flex; gap:.4rem; overflow-x:auto; padding:.25rem .75rem .55rem; -webkit-overflow-scrolling:touch; scrollbar-width:none;}
+nav.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto; border:1px solid var(--line); background:var(--card); color:var(--muted);
+  padding:.4rem .8rem; border-radius:999px; font-size:.82rem; font-weight:600; cursor:pointer;
+  white-space:nowrap; transition:.15s;
+}
+.tab.active{background:var(--accent); border-color:var(--accent); color:#fff;}
+main{max-width:760px; margin:0 auto; padding:0 1rem 5rem;}
+.doc{display:none; animation:fade .2s ease;}
+.doc.active{display:block;}
+@keyframes fade{from{opacity:0; transform:translateY(4px)} to{opacity:1; transform:none}}
+.doc h1{font-size:1.5rem; line-height:1.3; margin:1.3rem 0 .6rem; letter-spacing:-.02em;}
+.doc h2{font-size:1.22rem; margin:1.9rem 0 .55rem; padding-top:.3rem; border-top:1px solid var(--line); letter-spacing:-.01em;}
+.doc h2:first-of-type{border-top:none}
+.doc h3{font-size:1.06rem; margin:1.3rem 0 .45rem; color:var(--fg);}
+.doc h4{font-size:.96rem; margin:1rem 0 .35rem; color:var(--muted); font-weight:700;}
+.doc p{margin:.6rem 0;}
+.doc a{color:var(--accent); text-decoration:none; border-bottom:1px solid color-mix(in srgb,var(--accent) 35%,transparent);}
+.doc a:active{opacity:.6}
+.doc ul,.doc ol{padding-left:1.3rem; margin:.55rem 0;}
+.doc li{margin:.28rem 0;}
+.doc li::marker{color:var(--accent)}
+.doc blockquote{
+  margin:.9rem 0; padding:.6rem .9rem; border-left:3px solid var(--accent);
+  background:var(--accent-weak); border-radius:0 8px 8px 0; color:var(--fg);
+}
+.doc blockquote p{margin:.3rem 0}
+.doc hr{border:none; border-top:1px solid var(--line); margin:1.6rem 0;}
+.doc code{background:var(--code-bg); padding:.12em .4em; border-radius:5px; font-size:.86em;
+  font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;}
+.doc pre{background:var(--code-bg); padding:.85rem .9rem; border-radius:10px; overflow-x:auto;
+  -webkit-overflow-scrolling:touch; border:1px solid var(--line); margin:.9rem 0; box-shadow:var(--shadow);}
+.doc pre code{background:none; padding:0; font-size:.8rem; line-height:1.55; white-space:pre;}
+.table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:.9rem 0;
+  border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow);}
+.doc table{border-collapse:collapse; width:100%; font-size:.86rem; background:var(--card);}
+.doc th,.doc td{border-bottom:1px solid var(--line); padding:.5rem .65rem; text-align:left; vertical-align:top;}
+.doc th{background:var(--thead); font-weight:700; white-space:nowrap;}
+.doc tr:last-child td{border-bottom:none}
+.doc input[type=checkbox]{margin-right:.4rem; accent-color:var(--accent); transform:translateY(1px);}
+details.toc{margin:1.1rem 0 .4rem; border:1px solid var(--line); border-radius:10px; background:var(--card); box-shadow:var(--shadow);}
+details.toc>summary{cursor:pointer; padding:.6rem .85rem; font-weight:700; font-size:.9rem; list-style:none; color:var(--accent);}
+details.toc>summary::-webkit-details-marker{display:none}
+details.toc>summary::before{content:"\2630 "; opacity:.7}
+.toc ul{list-style:none; padding-left:0; margin:.2rem 0 .6rem;}
+.toc li{margin:0}
+.toc a{display:block; padding:.32rem .9rem; color:var(--fg); border:none; font-size:.86rem; border-left:2px solid transparent;}
+.toc a.lv3{padding-left:1.9rem; font-size:.82rem; color:var(--muted);}
+.toc a:active{background:var(--accent-weak)}
+#top{position:fixed; right:14px; bottom:18px; z-index:30; width:44px; height:44px; border-radius:50%;
+  border:1px solid var(--line); background:var(--card); color:var(--accent); font-size:1.2rem; cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.18); display:none; align-items:center; justify-content:center;}
+#top.show{display:flex}
+#toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(20px);
+  background:var(--fg); color:var(--bg); padding:.55rem 1rem; border-radius:999px; font-size:.82rem;
+  opacity:0; pointer-events:none; transition:.25s; z-index:40; max-width:90vw;}
+#toast.show{opacity:.95; transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<header class="app">
+  <div class="app-title">Aqua Desk · 디자인<small>도트 수족관 디자인 컨셉 — 아트 디렉션 · UI/UX · 픽셀 에셋</small></div>
+  <nav class="tabs"><button class="tab active" data-target="overview">개요</button><button class="tab" data-target="doc01">01 아트</button><button class="tab" data-target="doc02">02 UI·UX</button><button class="tab" data-target="doc03">03 픽셀아트</button></nav>
+</header>
+<main>
+<section class="doc active" id="overview" data-file="README.md">
+<h1 id="aqua-desk-디자인-컨셉-기획안">Aqua Desk — 디자인 컨셉 기획안</h1>
+<blockquote>
+<p>제품의 <strong>보이는 모든 것</strong>(아트·UI·모션·에셋 규격)을 하나의 감각·언어로 묶는 디자인 단일 진실원.<br>기획(<code>기획서/</code>)에서 확정된 노선·메타·아트 비전을 <strong>시각 시스템</strong>으로 옮긴 문서 모음입니다.</p>
+</blockquote>
+<h2 id="이-폴더의-역할">이 폴더의 역할</h2>
+<ul>
+<li><code>기획서/</code> = <strong>무엇을 왜</strong> (제품·BM·메타)</li>
+<li><code>설계서/</code> = <strong>어떻게 동작</strong> (아키텍처·데이터·네이티브)</li>
+<li><strong><code>디자인/</code> = 어떻게 보이고 느껴지는가</strong> (아트 무드·컬러·타이포·UI 컴포넌트·픽셀 에셋 규격·모션)</li>
+</ul>
+<blockquote>
+<p><strong>우선순위</strong>: 기술 계약은 항상 <a href="../GUARDRAILS.md"><code>../GUARDRAILS.md</code></a> &gt; <a href="../설계서/"><code>../설계서/</code></a> &gt; <a href="../기획서/"><code>../기획서/</code></a>가 우선합니다.<br>디자인 문서는 <strong>시각/감각 결정의 SoT</strong>이며, 숫자(경제 상수·스프라이트 픽셀 한계·FPS 캡 등 <em>기술 제약</em>)는 GUARDRAILS·설계서를 <strong>참조만</strong> 하고 재정의하지 않습니다.</p>
+</blockquote>
+<h2 id="문서-목록">문서 목록</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>문서</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01-아트-디렉션-및-비주얼-아이덴티티.md</a></td>
+<td>무드(노스탤직 레트로 코지-젠), 디자인 5대 기둥, <strong>컬러 시스템(팔레트 램프·토큰)</strong>, 수중 라이팅 언어(God Rays·굴절·발광 ↔ ES2.0 게이팅), 낮/밤 사이클 비주얼, 테마 무드보드(심해·사이버펑크·에메랄드 포레스트)</td>
+</tr>
+<tr>
+<td><a href="./02-UI-UX-디자인-시스템.md">02-UI-UX-디자인-시스템.md</a></td>
+<td>레이아웃 그리드·간격 스케일, <strong>타이포(갈무리+Pretendard)</strong>, 컴포넌트 라이브러리(버튼·카드·재화 HUD·시트·토스트), 아이코노그래피, 모션 토큰, <strong>화면별 레이아웃</strong>(로비·꾸미기·낚시·상점·도감·설정), 위젯·알림·공유카드, 접근성·저모션</td>
+</tr>
+<tr>
+<td><a href="./03-픽셀-아트-에셋-가이드.md">03-픽셀-아트-에셋-가이드.md</a></td>
+<td>캔버스 규격, FSM 상태별 프레임 예산, <strong>3형 스켈레톤 템플릿</strong>(방추·원반·장형), 3단 테마 변주 파이프라인(컬러스왑·FX패스·전용도트), 희귀도 비주얼 언어, 성격 비주얼 텔, 만족/불만족(sulk) 상태, 아틀라스·명명·익스포트(Aseprite→TexturePacker)</td>
+</tr>
+</tbody></table></div>
+<h2 id="디자인-5대-기둥-design-pillars">디자인 5대 기둥 (Design Pillars)</h2>
+<ol>
+<li><strong>Cozy First, Guilt Never</strong> — 죽음·불안·죄책감 연출 금지. 불만족조차 <em>부드럽고 회복은 1회</em>. 빨강 경고/해골 금지, 톤은 항상 따뜻하게. (<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §1</a>)</li>
+<li><strong>Classic Density, Modern Light</strong> — GBA/아케이드급 밀도 높은 클래식 도트 + 현대적 수중 라이팅(God Rays·굴절·발광)의 의도된 충돌. 얕은 플래시게임 톤 배제.</li>
+<li><strong>Always-On Calm</strong> — 첫 화면은 라이브 배경. 정적이지만 죽어있지 않은 앰비언트 모션. 시선을 빼앗지 않는 저주기 호흡.</li>
+<li><strong>One Identity, Many Moods</strong> — 테마가 바뀌면 <em>형태가 아니라 빛과 색</em>이 바뀐다(3단 아트 전략). 어떤 테마든 한 게임으로 보인다.</li>
+<li><strong>Readable Retro</strong> — 픽셀은 <em>맛</em>, 가독성은 <em>기능</em>. 본문·튜토리얼은 또렷한 산세리프(중장년 배려), 픽셀 폰트는 헤딩·수치 등 액센트에 한정.</li>
+</ol>
+<h2 id="권장-읽기-순서">권장 읽기 순서</h2>
+<ol>
+<li>무드·컬러·라이팅 톤 잡기 → <code>01</code></li>
+<li>그 톤으로 화면·컴포넌트 만들기 → <code>02</code></li>
+<li>화면에 들어갈 픽셀 에셋 찍기 → <code>03</code></li>
+</ol>
+<h2 id="미해결-디자인-다이얼-출시-전-확정">미해결 / 디자인 다이얼 (출시 전 확정)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> 브랜드 로고·앱 아이콘·스토어 키 비주얼 (별도 워크)</li>
+<li><input disabled="" type="checkbox"> 64색 마스터 팔레트 최종 확정(<code>.aseprite</code> 팔레트 파일로 고정)</li>
+<li><input disabled="" type="checkbox"> 갈무리 폰트 라이선스/임베딩 방식(웹폰트 서브셋) 확정</li>
+<li><input disabled="" type="checkbox"> 사운드(후순위) — 본 문서 범위 밖, 별도 오디오 가이드 필요 시 분리</li>
+</ul>
+</section>
+<section class="doc" id="doc01" data-file="01-아트-디렉션-및-비주얼-아이덴티티.md">
+<h1 id="01-아트-디렉션-및-비주얼-아이덴티티">01. 아트 디렉션 및 비주얼 아이덴티티</h1>
+<blockquote>
+<p>기준: <a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §1.4</a>(아트 비전)·<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">§4.5</a>(낮/밤)·<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">§5</a>(아트 방폭).<br>기술 제약: <a href="../GUARDRAILS.md">GUARDRAILS §0</a>(스택)·<a href="../설계서/03-네이티브-안드로이드-설계.md">설계서 03 §2.4</a>(셰이더 게이팅).</p>
+</blockquote>
+<hr>
+<h2 id="1-무드-노스탤직-레트로-코지-젠">1. 무드: "노스탤직 레트로 코지-젠"</h2>
+<blockquote>
+<p>한 문장: <strong>GBA 시절의 손맛 나는 굵은 도트</strong> 위에 <strong>현대적 수중 라이팅(God Rays·굴절·발광)</strong> 을 얹어, 켜 두는 것만으로 마음이 가라앉는 <em>살아있는 도트 수족관</em>.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>축</th>
+<th>지향 (DO)</th>
+<th>배제 (DON'T)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>밀도</strong></td>
+<td>GBA/고사양 아케이드급 디테일, 손으로 찍은 셰이딩·딜리트</td>
+<td>단색 플랫 + 평면 그라데이션의 얕은 플래시게임 톤</td>
+</tr>
+<tr>
+<td><strong>빛</strong></td>
+<td>셰이더 기반 God Rays·굴절·발광으로 도트 위에 <em>깊이</em></td>
+<td>도트를 덮어버리는 과한 블룸·렌즈플레어</td>
+</tr>
+<tr>
+<td><strong>온도</strong></td>
+<td>따뜻한 모래·산호 + 차분한 청록 물. 항상 <em>포근함</em></td>
+<td>차갑고 임상적인 네온 일색(사이버펑크 테마 제외), 빨강 경고색</td>
+</tr>
+<tr>
+<td><strong>무게</strong></td>
+<td>느린 호흡, 부드러운 이징, 둥근 실루엣</td>
+<td>급정거·하드컷·번쩍임(코지 위반)</td>
+</tr>
+<tr>
+<td><strong>정서</strong></td>
+<td>안온·소유·자랑(귀여움)</td>
+<td>불안·압박·죄책감(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §1.1</a> 죽음 없음)</td>
+</tr>
+</tbody></table></div>
+<h3 id="1-1-두-레이어-한-정체성">1.1 두 레이어, 한 정체성</h3>
+<p>같은 비주얼 언어가 <strong>두 표면</strong>에서 일관돼야 한다.</p>
+<ul>
+<li><strong>라이브 배경(네이티브, OpenGL ES 2.0)</strong> — 풀스크린 도트 + 셰이더. 게임의 <em>얼굴</em>. 항상 보이지만 시선을 빼앗지 않는다.</li>
+<li><strong>앱 UI(WebView, HTML/CSS)</strong> — 인터랙션 표면. 픽셀 감각의 UI 크롬으로 배경과 한 세계처럼.</li>
+</ul>
+<p>두 레이어가 같은 팔레트·같은 광원·같은 모션 곡선을 공유하면 "웹뷰 래퍼"가 아니라 <em>하나의 게임</em>으로 읽힌다. (iOS App Store 4.2 대응 정합 — <a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §2.6</a>)</p>
+<hr>
+<h2 id="2-컬러-시스템">2. 컬러 시스템</h2>
+<h3 id="2-1-원칙">2.1 원칙</h3>
+<ul>
+<li><strong>씬 합산 64색 권장</strong> (<a href="../기획서/01-앱-컨셉-기획.md">기획서 01 §3.3</a>). 마스터 팔레트는 <code>.aseprite</code> 팔레트로 고정하고 모든 에셋이 공유.</li>
+<li>테마 변주는 <strong>색을 새로 찍지 않고</strong> LUT/색상 시프트 셰이더로 처리(3단 전략 ① — <a href="./03-픽셀-아트-에셋-가이드.md">03 §4</a>).</li>
+<li>UI 크롬도 같은 램프에서 토큰을 뽑아 <em>배경과 같은 물에 잠긴</em> 느낌.</li>
+</ul>
+<h3 id="2-2-마스터-램프-기본-테마-심해">2.2 마스터 램프 (기본 테마 = 심해)</h3>
+<blockquote>
+<p>hex는 디자인 토큰 기준값. 픽셀 아트는 이 램프 안에서 셰이딩 단계를 고른다.</p>
+</blockquote>
+<p><strong>잉크 / 중성 (UI 표면·깊은 그림자)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>토큰</th>
+<th>hex</th>
+<th>용도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ink-900</code></td>
+<td><code>#0B1726</code></td>
+<td>최심부, 모달 배경, 비네팅</td>
+</tr>
+<tr>
+<td><code>ink-800</code></td>
+<td><code>#122334</code></td>
+<td>앱 기본 배경(다크)</td>
+</tr>
+<tr>
+<td><code>ink-700</code></td>
+<td><code>#1B3247</code></td>
+<td>카드·시트 표면</td>
+</tr>
+<tr>
+<td><code>ink-600</code></td>
+<td><code>#274A63</code></td>
+<td>보더·구분선</td>
+</tr>
+<tr>
+<td><code>ink-500</code></td>
+<td><code>#3A6B86</code></td>
+<td>비활성 텍스트/아이콘</td>
+</tr>
+</tbody></table></div>
+<p><strong>물 그라데이션 (배경 패럴랙스)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>토큰</th>
+<th>hex</th>
+<th>위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>water-top</code></td>
+<td><code>#1E5A7A</code></td>
+<td>수면 가까이(밝음)</td>
+</tr>
+<tr>
+<td><code>water-mid</code></td>
+<td><code>#144A6B</code></td>
+<td>중층</td>
+</tr>
+<tr>
+<td><code>water-deep</code></td>
+<td><code>#0C2E47</code></td>
+<td>심층</td>
+</tr>
+<tr>
+<td><code>water-floor</code></td>
+<td><code>#08263B</code></td>
+<td>바닥 근처</td>
+</tr>
+</tbody></table></div>
+<p><strong>기질 / 모래 (따뜻한 베이스)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>토큰</th>
+<th>hex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sand-light</code></td>
+<td><code>#E8D6A8</code></td>
+</tr>
+<tr>
+<td><code>sand</code></td>
+<td><code>#D2B583</code></td>
+</tr>
+<tr>
+<td><code>sand-shadow</code></td>
+<td><code>#A8895C</code></td>
+</tr>
+</tbody></table></div>
+<p><strong>식생 / 산호 액센트</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>토큰</th>
+<th>hex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kelp</code> / <code>kelp-dark</code></td>
+<td><code>#3E8E6E</code> / <code>#2C6E54</code></td>
+</tr>
+<tr>
+<td><code>coral-pink</code></td>
+<td><code>#E8728C</code></td>
+</tr>
+<tr>
+<td><code>coral-warm</code></td>
+<td><code>#F0936B</code></td>
+</tr>
+<tr>
+<td><code>anemone</code></td>
+<td><code>#9B6BC4</code></td>
+</tr>
+</tbody></table></div>
+<p><strong>발광 / 바이오루미네선스 (Additive·야간 점등)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>토큰</th>
+<th>hex</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>glow-cyan</code></td>
+<td><code>#6FE3E0</code></td>
+<td><strong>시그니처 브랜드 컬러</strong>, God Rays 틴트</td>
+</tr>
+<tr>
+<td><code>glow-aqua</code></td>
+<td><code>#54C8D8</code></td>
+<td>보조 발광</td>
+</tr>
+<tr>
+<td><code>glow-magenta</code></td>
+<td><code>#E26FB0</code></td>
+<td>희귀·야간 점등</td>
+</tr>
+<tr>
+<td><code>glow-gold</code></td>
+<td><code>#F7D77A</code></td>
+<td>진주·프리미엄·따뜻한 점등</td>
+</tr>
+</tbody></table></div>
+<p><strong>페이퍼 / 텍스트</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>토큰</th>
+<th>hex</th>
+<th>용도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>paper</code></td>
+<td><code>#F4ECDA</code></td>
+<td>다크 위 1차 텍스트, 라이트 표면</td>
+</tr>
+<tr>
+<td><code>text-muted</code></td>
+<td><code>#9DB4C4</code></td>
+<td>보조 텍스트</td>
+</tr>
+</tbody></table></div>
+<h3 id="2-3-시맨틱-재화-컬러">2.3 시맨틱·재화 컬러</h3>
+<p>재화 4종(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §3.1</a>)은 <strong>색 + 아이콘 형태</strong>로 동시 구분(색맹 대응).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>의미</th>
+<th>토큰/색</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>코인</td>
+<td><code>glow-gold</code> <code>#F7D77A</code></td>
+<td>동그란 동전 실루엣</td>
+</tr>
+<tr>
+<td>진주</td>
+<td><code>#F2DDE8</code> (이리데센트) + glow</td>
+<td>광택 도는 흰-핑크</td>
+</tr>
+<tr>
+<td>하트</td>
+<td><code>coral-pink</code> <code>#E8728C</code></td>
+<td>소셜 카운터</td>
+</tr>
+<tr>
+<td>스태미나</td>
+<td><code>glow-cyan</code> <code>#6FE3E0</code></td>
+<td>번개/물방울 게이지</td>
+</tr>
+<tr>
+<td>성공·먹이</td>
+<td><code>kelp</code> <code>#3E8E6E</code></td>
+<td>초록</td>
+</tr>
+<tr>
+<td>불만족(경고 아님)</td>
+<td><code>#E0B86A</code> 부드러운 앰버</td>
+<td><strong>빨강 금지</strong> — 죄책감 연출 배제(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">§1.2</a>)</td>
+</tr>
+</tbody></table></div>
+<h3 id="2-4-희귀도-컬러-common-rare-cosmic-mythic">2.4 희귀도 컬러 (Common → Rare → Cosmic/Mythic)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>티어</th>
+<th>컬러</th>
+<th>처리</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Common</td>
+<td><code>text-muted</code> <code>#9DB4C4</code></td>
+<td>무광, 글로우 없음</td>
+</tr>
+<tr>
+<td>Rare</td>
+<td><code>glow-aqua</code> <code>#54C8D8</code></td>
+<td>림 글로우(FX 패스 ②) + 1~2 액센트</td>
+</tr>
+<tr>
+<td>Cosmic/Mythic</td>
+<td><code>glow-magenta</code>→<code>glow-gold</code> 그라데이션</td>
+<td>애니메이션 시머·파티클 + 전용 도트(③)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>색만으로 구분하지 않는다. 도감/네임플레이트의 <strong>프레임 형태·아이콘</strong>으로도 티어를 표기(<a href="./02-UI-UX-디자인-시스템.md">02 §6</a>, <a href="./03-픽셀-아트-에셋-가이드.md">03 §6</a>).</p>
+</blockquote>
+<hr>
+<h2 id="3-라이팅-언어-도트-위의-빛">3. 라이팅 언어 (도트 위의 빛)</h2>
+<blockquote>
+<p>ES 2.0 프래그먼트 셰이더로 구현, <strong>셰이더 게이팅 정책</strong>에 따라 강도가 변한다(<a href="../설계서/03-네이티브-안드로이드-설계.md">설계서 03 §2.4</a> / <a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §2.4</a>). 디자인은 <em>게이팅이 꺼져도 그림이 성립</em>하도록 설계한다(빛은 보너스, 도트가 본체).</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>광원 요소</th>
+<th>비주얼 의도</th>
+<th>셰이더</th>
+<th>게이팅 시</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>God Rays</strong></td>
+<td>수면에서 비스듬히 내리는 빛기둥, 느린 흔들림</td>
+<td>상단 그라데이션 + 노이즈 마스크</td>
+<td>미터치 시 루프 연장, 절전 시 OFF</td>
+</tr>
+<tr>
+<td><strong>굴절(Refraction)</strong></td>
+<td>물의 일렁임으로 배경 레이어 미세 왜곡</td>
+<td>UV 워블</td>
+<td>미터치 시 일시정지, 절전 시 OFF</td>
+</tr>
+<tr>
+<td><strong>발광(Glow/Bloom)</strong></td>
+<td>바이오루미네선스 오브젝트·물고기 눈</td>
+<td>Additive 블렌딩 패스</td>
+<td>절전 시 OFF(순수 도트만)</td>
+</tr>
+<tr>
+<td><strong>부유 입자</strong></td>
+<td>물 속 먼지·기포가 빛에 반짝</td>
+<td>3프레임 스프라이트 파티클</td>
+<td>저감</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li><strong>터치 파문(Ripple)</strong>: <code>RenderEffect</code>/AGSL는 최소 SDK(API 29)에서 불가 → <strong>3프레임 스프라이트 파티클</strong>로 구현(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §2.4</a>). 디자인은 "셰이더 물결"이 아니라 <em>도트 파문 스프라이트</em>로 그린다. (0.5~1s, 물고기 scatter → 2s 복귀 — <a href="../기획서/01-앱-컨셉-기획.md">기획서 01 §2.4</a>)</li>
+</ul>
+<blockquote>
+<p><strong>저모션/저전력 = 디자인 상태</strong>, 단순 성능 옵션이 아니다. 절전 모드의 "순수 도트만" 화면도 <em>그 자체로 아름다운 정물</em>이 되도록 도트 컴포지션을 1순위로 잡는다.</p>
+</blockquote>
+<hr>
+<h2 id="4-낮-밤-환경-사이클">4. 낮/밤 환경 사이클</h2>
+<blockquote>
+<p>전 테마 코어 시스템 (<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §4.5</a>). 기기 로컬 시간 기준.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>구간</th>
+<th>시간</th>
+<th>비주얼</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>주간(Day)</strong></td>
+<td>06:00–18:00</td>
+<td>God Rays 풀, 따뜻한 색온도, 모래·산호 채도 ↑</td>
+</tr>
+<tr>
+<td><strong>황혼/여명(Dusk/Dawn)</strong></td>
+<td>경계 전후 <strong>30~60분 보간</strong></td>
+<td>색온도·오버레이 알파를 lerp. <em>하드컷 금지</em></td>
+</tr>
+<tr>
+<td><strong>야간(Night)</strong></td>
+<td>18:00–06:00</td>
+<td>다크 인디고 멀티플라이 오버레이, <strong>물고기 눈·야광 오브젝트만 Additive 점등</strong></td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>야간 점등 컬러: <code>glow-cyan</code>/<code>glow-magenta</code>/<code>glow-gold</code> — 종·테마별 시그니처.</li>
+<li>설정에서 <strong>고정 오버라이드</strong>(항상 주간 / 항상 야간) 제공(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §4.5</a>).</li>
+<li>디자인 산출물: 각 테마는 <strong>주간 LUT / 야간 LUT</strong> 2벌 + Additive 점등 마스크 1벌을 납품(전용 도트 추가 없음 — 3단 전략 ①②로 해결).</li>
+</ul>
+<hr>
+<h2 id="5-테마-무드보드">5. 테마 무드보드</h2>
+<blockquote>
+<p>테마 = 코어 BM(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §3.2</a>). 변경 시 그래픽 + 네이티브 셰이더 무드가 함께 전환.<br><strong>형태가 아니라 빛과 색이 바뀐다</strong> — 같은 어종 스프라이트에 테마별 LUT(①) + FX 패스(②)를 적용. 전용 도트(③)는 테마 <em>히어로 어종 1~2종</em>만.</p>
+</blockquote>
+<h3 id="5-1-심해-deep-sea-기본">5.1 심해 (Deep Sea) — 기본</h3>
+<ul>
+<li><strong>무드</strong>: 고요·신비·포근. 게임의 기본값이자 톤의 기준.</li>
+<li><strong>팔레트</strong>: <code>water-*</code> 청록 그라데이션 + 따뜻한 <code>sand-*</code> 바닥 + <code>glow-cyan</code>/<code>glow-gold</code> 점등.</li>
+<li><strong>라이팅</strong>: 수면 God Rays 강, 부드러운 굴절, 심해 비네팅.</li>
+<li><strong>시그니처</strong>: 해파리/아귀류의 청록 바이오루미네선스. 차분한 호흡.</li>
+</ul>
+<h3 id="5-2-사이버펑크-네온-cyberpunk-neon">5.2 사이버펑크 네온 (Cyberpunk Neon)</h3>
+<ul>
+<li><strong>무드</strong>: 도시 야경 어항. 코지 톤은 유지하되 <em>생기 있는 네온</em>.</li>
+<li><strong>팔레트</strong>: 보라-블랙 물 + <code>glow-magenta</code>/<code>glow-cyan</code> 네온, 홀로그램 산호.</li>
+<li><strong>라이팅</strong>: FX 패스 ② 적극 — Additive 글로우·홀로그램·미세 스캔라인. 야간에 절정.</li>
+<li><strong>주의</strong>: "사이버네틱/홀로그램"은 ①(색)이 아니라 ②(빛)다. 전용 도트(③)로 새지 않도록 FX 패스로 구현(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §5.1</a>).</li>
+</ul>
+<h3 id="5-3-에메랄드-포레스트-emerald-forest">5.3 에메랄드 포레스트 (Emerald Forest)</h3>
+<ul>
+<li><strong>무드</strong>: 햇살 드는 민물 숲. 가장 밝고 따뜻, 주간감 강조.</li>
+<li><strong>팔레트</strong>: 에메랄드-골드 물, 이끼 낀 돌, 수련잎, <code>glow-gold</code> 반점광.</li>
+<li><strong>라이팅</strong>: 나뭇잎 사이 얼룩진 God Rays(dappled), 따뜻한 색온도.</li>
+</ul>
+<h3 id="5-4-테마-납품-체크리스트-디자인-아트">5.4 테마 납품 체크리스트 (디자인→아트)</h3>
+<p>각 신규 테마는 다음만 산출하면 된다(곱셈 폭발 방지):</p>
+<ul>
+<li><input disabled="" type="checkbox"> 테마 <strong>LUT 2벌</strong>(주간/야간) — 기존 어종 전체 색 변조(①)</li>
+<li><input disabled="" type="checkbox"> 테마 <strong>FX 패스 프로파일</strong>(글로우/블룸/스캔라인 강도 — ②)</li>
+<li><input disabled="" type="checkbox"> 배경 패럴랙스 <strong>2~3레이어</strong> 도트(테마 전용)</li>
+<li><input disabled="" type="checkbox"> 테마 <strong>히어로 어종 1~2종</strong> 전용 도트(③) — 최고 희귀도</li>
+<li><input disabled="" type="checkbox"> God Rays/굴절 <strong>셰이더 파라미터 프리셋</strong>(색온도·강도)</li>
+</ul>
+<hr>
+<h2 id="6-앱-아이콘-브랜드-방향만-별도-워크">6. 앱 아이콘 · 브랜드 (방향만 — 별도 워크)</h2>
+<ul>
+<li>아이콘: 어두운 청록 원형 배경 + 중앙 <code>glow-cyan</code> 발광 물고기 1마리(시그니처). 작은 사이즈에서도 읽히는 굵은 도트 실루엣.</li>
+<li>워드마크: 갈무리 계열 픽셀 + 물방울 도트. 라이트/다크 2벌.</li>
+<li>스토어 키 비주얼: "홈 화면에 살아있는 수족관" 한 컷(실기기 목업) + 테마 3종 비교.</li>
+</ul>
+<blockquote>
+<p>로고/아이콘 확정 픽셀 시트는 출시 전 별도 디자인 워크로 분리(<a href="./README.md">README 다이얼</a>).</p>
+</blockquote>
+<hr>
+<h2 id="다음">다음</h2>
+<p>→ 이 톤으로 화면·컴포넌트를 만드는 규칙은 <a href="./02-UI-UX-디자인-시스템.md">02-UI-UX-디자인-시스템.md</a> → 화면에 들어갈 도트 에셋 규격은 <a href="./03-픽셀-아트-에셋-가이드.md">03-픽셀-아트-에셋-가이드.md</a></p>
+</section>
+<section class="doc" id="doc02" data-file="02-UI-UX-디자인-시스템.md">
+<h1 id="02-ui-ux-디자인-시스템">02. UI · UX 디자인 시스템</h1>
+<blockquote>
+<p>대상: 인터랙티브 UI는 전부 <strong>Next.js 웹앱(WebView)</strong> (<a href="../GUARDRAILS.md">GUARDRAILS §2</a>). 본 문서는 그 위에 얹는 <strong>픽셀 코지 디자인 시스템</strong>.<br>컬러·타이포 토큰은 <a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01</a>의 마스터 램프에서 파생. 화면 목록은 <a href="../기획서/01-앱-컨셉-기획.md">기획서 01 §2.3</a>.</p>
+</blockquote>
+<hr>
+<h2 id="1-레이아웃-기초">1. 레이아웃 기초</h2>
+<ul>
+<li><strong>타깃</strong>: 모바일 세로 우선, 디자인 폭 <strong>360–430px</strong>(기준 390). 1컬럼. 세이프에어리어(노치·제스처바) 패딩 반영.</li>
+<li><strong>그리드 / 간격</strong>: <strong>4px 베이스</strong>, 주 스텝 8. 토큰: <code>space-1=4 / 2=8 / 3=12 / 4=16 / 6=24 / 8=32</code>. 픽셀 정합을 위해 4의 배수 고정.</li>
+<li><strong>모서리</strong>: 안티에일리어싱 둥근 모서리 대신 <strong>2px 계단형(stepped) 픽셀 코너</strong> 또는 직각. 토큰 <code>radius-pixel = 0</code>(직각) / <code>radius-step</code>(2px 2단).</li>
+<li><strong>보더</strong>: 1~2px 하드 라인(<code>ink-600</code>). 그라데이션·드롭섀도 대신 <strong>1px 픽셀 섀도</strong>(아래 2px 오프셋 <code>ink-900</code>)로 깊이.</li>
+<li><strong>엘리베이션</strong>: 블러 그림자 금지(픽셀 톤 위반). 표면 명도 단계(<code>ink-800</code>→<code>700</code>)와 1px 외곽선으로 레이어 표현.</li>
+<li><strong>네비게이션</strong>: 하단 고정 <strong>탭 바 5개</strong> — 로비 · 꾸미기 · 낚시 · 상점 · 도감. 설정은 로비 우상단 진입.</li>
+</ul>
+<pre><code>┌───────────────────────────┐  ← 세이프에어리어 상단
+│  [재화 HUD]          [⚙]  │
+│                           │
+│      (화면 콘텐츠)         │
+│                           │
+├───────────────────────────┤
+│ 🏠로비 🎨꾸미기 🎣낚시 🛒상점 📖도감 │  ← 하단 탭바(픽셀 아이콘 24px)
+└───────────────────────────┘  ← 세이프에어리어 하단
+</code></pre>
+<hr>
+<h2 id="2-타이포그래피">2. 타이포그래피</h2>
+<blockquote>
+<p><strong>Readable Retro</strong> 기둥(<a href="./README.md">README</a>): 픽셀은 액센트, 본문은 가독 산세리프. 한글·영문·숫자 모두 또렷해야 함(낚시 1.0s 타이밍·중장년 배려 — <a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §6.1</a>).</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>역할</th>
+<th>폰트</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>디스플레이/헤딩/수치/라벨</td>
+<td><strong>갈무리(Galmuri11, 작은 곳 Galmuri9)</strong></td>
+<td>한글+라틴 픽셀 폰트, 레트로 액센트. 정수 픽셀 배수(11/22/33px)에서만 렌더</td>
+</tr>
+<tr>
+<td>본문/설명/튜토리얼/긴 글</td>
+<td><strong>Pretendard</strong>(또는 시스템 한글 산세)</td>
+<td>가독성·중장년 배려. 안티에일리어싱 허용</td>
+</tr>
+<tr>
+<td>숫자 강조(재화 카운트)</td>
+<td>갈무리 + <code>tabular-nums</code></td>
+<td>자릿수 흔들림 방지</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li><strong>타입 스케일</strong>: <code>display 22 / h1 18 / h2 16 / body 14 / caption 12 / micro 11</code>(px). 픽셀 폰트는 11의 정수배 우선.</li>
+<li><strong>행간</strong>: 본문 1.5, 픽셀 헤딩 1.2. <strong>자간 0</strong>(픽셀 폰트 자간 조정 금지 — 깨짐).</li>
+<li><strong>라이선스</strong>: 갈무리 웹폰트 <strong>서브셋 임베딩</strong>(사용 글리프만) 확정 필요(<a href="./README.md">README 다이얼</a>).</li>
+</ul>
+<hr>
+<h2 id="3-컴포넌트-라이브러리">3. 컴포넌트 라이브러리</h2>
+<h3 id="3-1-버튼-픽셀-베벨">3.1 버튼 (픽셀 베벨)</h3>
+<pre><code> ┌──────────────┐   기본: 2px 외곽선(ink-900) + 면(brand/coral)
+ │  먹이 주기 🐟 │   상단 1px 하이라이트, 하단 2px 픽셀 섀도
+ └──────────────┘
+ press → 섀도 제거 + 1px 아래로(눌림감), 80ms
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>변형</th>
+<th>면</th>
+<th>용도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary</td>
+<td><code>glow-cyan</code> 면 + <code>ink-900</code> 글자</td>
+<td>주요 확정(저장·구매)</td>
+</tr>
+<tr>
+<td>Warm</td>
+<td><code>coral-warm</code></td>
+<td>케어(먹이·청소)</td>
+</tr>
+<tr>
+<td>Ghost</td>
+<td>투명 + 1px 보더</td>
+<td>보조·취소</td>
+</tr>
+<tr>
+<td>Premium</td>
+<td><code>glow-gold</code> 면 + 시머</td>
+<td>진주/패스 결제</td>
+</tr>
+<tr>
+<td>Disabled</td>
+<td><code>ink-600</code> 무광</td>
+<td>토큰 없음·조건 미달(아래 §7 위젯 참조)</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>탭 타깃 <strong>최소 44×44px</strong>(접근성). 라벨은 아이콘+텍스트 병기.</li>
+</ul>
+<h3 id="3-2-재화-hud-상단-상시">3.2 재화 HUD (상단 상시)</h3>
+<p>좌상단 칩 묶음. 색 + <strong>아이콘 형태</strong>로 구분(색맹 대응 — <a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01 §2.3</a>).</p>
+<pre><code>( 🪙 1,240 )( 🦪 12 )( ❤ 8 )( ⚡ 4/5 )
+  코인        진주     하트    스태미나
+</code></pre>
+<ul>
+<li>값은 <strong>낙관적 UI 표시용</strong>, 권위는 서버 RPC 결과(<a href="../GUARDRAILS.md">GUARDRAILS §9</a>). <code>conflict</code> 시 칩 값 리프레시.</li>
+<li>증감 시 칩이 짧게 펄스(+숫자 플로트 업), 코지 톤(번쩍임 금지).</li>
+</ul>
+<h3 id="3-3-카드">3.3 카드</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>카드</th>
+<th>구성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>어항 썸네일</strong>(로비)</td>
+<td>라이브 미니 프리뷰 또는 webp 스냅샷 + 상태배지(만족/불만족) + 평점 별</td>
+</tr>
+<tr>
+<td><strong>도감 카드</strong></td>
+<td>어종 도트 + 이름 + 희귀도 프레임(<a href="#6-희귀도-상태-표기">§6</a>) + 미획득은 실루엣</td>
+</tr>
+<tr>
+<td><strong>상점 슬롯</strong></td>
+<td>아이템 도트 + 가격칩(코인/진주) + 남은시간(일일 6슬롯)</td>
+</tr>
+</tbody></table></div>
+<h3 id="3-4-바텀시트-모달">3.4 바텀시트 · 모달</h3>
+<ul>
+<li>액션은 <strong>바텀시트</strong>(엄지 도달). 상단 16px 핸들바, <code>ink-800</code> 면 + 상단 1px <code>ink-600</code>.</li>
+<li>파괴적/결제 확인만 중앙 모달 + 딤(<code>ink-900</code> 60%).</li>
+</ul>
+<h3 id="3-5-토스트-피드백">3.5 토스트 · 피드백</h3>
+<ul>
+<li>화면 하단 위(탭바 위) 떠오르는 픽셀 토스트, 2.5s 자동 소멸. 색은 시맨틱(성공 <code>kelp</code>, 안내 <code>glow-aqua</code>).</li>
+<li><strong>불만족/실패는 부드러운 앰버</strong>, 빨강·해골·진동 경고 금지(<a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01 §2.3</a>, <a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §1.2</a>).</li>
+</ul>
+<h3 id="3-6-아이코노그래피">3.6 아이코노그래피</h3>
+<ul>
+<li><strong>16px / 24px 픽셀 아이콘</strong>, 1px(=화면 2px) 스트로크 굵기 통일, 마스터 팔레트 색만. 탭바 24px, 인라인 16px.</li>
+<li>라인+솔리드 혼용 금지(한 가지 굵기·스타일). 자세한 에셋 규격은 <a href="./03-픽셀-아트-에셋-가이드.md">03 §7</a>.</li>
+</ul>
+<hr>
+<h2 id="4-모션-토큰">4. 모션 토큰</h2>
+<blockquote>
+<p><strong>Cozy First</strong> — 부드러운 이징, 급정거 금지. 저모션/저전력은 <em>디자인 상태</em>(<a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01 §3</a>).</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>토큰</th>
+<th>값</th>
+<th>용도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dur-instant</code></td>
+<td>80ms</td>
+<td>버튼 눌림</td>
+</tr>
+<tr>
+<td><code>dur-quick</code></td>
+<td>160ms</td>
+<td>칩 펄스, 토글</td>
+</tr>
+<tr>
+<td><code>dur-base</code></td>
+<td>240ms</td>
+<td>시트/페이지 전환</td>
+</tr>
+<tr>
+<td><code>dur-slow</code></td>
+<td>400ms</td>
+<td>모달, 강조 등장</td>
+</tr>
+<tr>
+<td><code>dur-ambient</code></td>
+<td>3–8s 루프</td>
+<td>배경 호흡·God Rays(네이티브)</td>
+</tr>
+<tr>
+<td><code>ease-cozy</code></td>
+<td>cubic-bezier(0.22,0.61,0.36,1)</td>
+<td>UI 기본(부드러운 ease-out)</td>
+</tr>
+<tr>
+<td><code>ease-drift</code></td>
+<td>linear</td>
+<td>앰비언트 드리프트</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li><strong><code>prefers-reduced-motion</code> 존중</strong>: 패럴랙스·플로트·시머 OFF, 페이드만. 이는 네이티브 절전 게이팅과 톤을 맞춘다(<a href="../설계서/03-네이티브-안드로이드-설계.md">설계서 03 §2.4</a>).</li>
+</ul>
+<hr>
+<h2 id="5-화면별-레이아웃">5. 화면별 레이아웃</h2>
+<blockquote>
+<p>화면 역할 출처 <a href="../기획서/01-앱-컨셉-기획.md">기획서 01 §2.3</a>. 상태변경은 모두 RPC(<a href="../GUARDRAILS.md">GUARDRAILS §4.3</a>).</p>
+</blockquote>
+<h3 id="5-1-로비-home">5.1 로비 (Home)</h3>
+<pre><code>( 재화 HUD )                         (⚙ 설정)
+┌─────────────────────────────────┐
+│   [ 내 어항 라이브/스냅샷 프리뷰 ]   │
+│   상태: 😊 만족   ⭐⭐⭐⭐☆ 평점     │
+│   레벨 7 · 도감 42%               │
+├─────────────────────────────────┤
+│  [ 먹이 주기 ]   [ 청소하기 ]      │ ← Warm 버튼, feed_fish/clean_aquarium RPC
+│  [ 오프라인 코인 +320 받기 ]       │ ← collect_offline RPC
+├─────────────────────────────────┤
+│  어항 1  ·  어항 2(도감80% 잠금🔒)  │ ← 멀티 어항 락인
+└─────────────────────────────────┘
+[🏠][🎨][🎣][🛒][📖]
+</code></pre>
+<ul>
+<li>진입 즉시 "살아있음"을 보여줌(라이브/스냅샷). 퀵 액션은 손가락 아래.</li>
+<li>오프라인 코인 수령은 +숫자 플로트 연출, 광고 2배 옵션 칩(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §3.5</a>).</li>
+</ul>
+<h3 id="5-2-꾸미기-decorate">5.2 꾸미기 (Decorate)</h3>
+<pre><code>┌─────────────────────────────────┐
+│   [ 어항 편집 캔버스(그리드 16px) ] │ ← 드래그 배치, slots만 클라 쓰기
+│                                  │
+├─────────────────────────────────┤
+│  탭: 바닥 | 식물 | 오브젝트 | 조명 | 테마 │
+│  [인벤토리 썸네일 가로 스크롤 …]    │
+│  평점 미리보기:  ⭐⭐⭐⭐☆ (+풍수)   │ ← 미학→진행 (기획서 04 §4.2)
+└─────────────────────────────────┘
+ [ 저장 ]  → 네이티브 sync + webp 스냅샷 생성
+</code></pre>
+<ul>
+<li>배치 슬롯 = 16px 그리드 스냅. <strong>테마 탭</strong>에서 프리미엄 테마 미리보기(셰이더 무드 동시 전환 — <a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01 §5</a>).</li>
+<li>저장 시 위젯용 webp를 <strong>웹앱이 Canvas로 생성</strong>해 업로드(<a href="../GUARDRAILS.md">GUARDRAILS §9</a>).</li>
+</ul>
+<h3 id="5-3-낚시-fishing-4단계-미니게임">5.3 낚시 (Fishing) — 4단계 미니게임</h3>
+<blockquote>
+<p>플로우·스킬 매핑 <a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §6</a>. 보상은 전부 서버(<code>fishing-resolve</code>), Optimistic UI.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>단계</th>
+<th>UI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>캐스팅</td>
+<td>가로 <strong>힘 게이지</strong> + Perfect 존(녹색 띠). 적중 시 희귀확률 +10%p</td>
+</tr>
+<tr>
+<td>입질</td>
+<td>찌 가라앉음 + "!" 팝 → <strong>1.0초</strong> 탭 윈도우(완화)</td>
+</tr>
+<tr>
+<td>릴링</td>
+<td>세로 트랙 + 이동 <strong>그린존</strong>, 찌를 3초 유지(탭/홀드↑·떼면↓), 상·하단 끝=실패</td>
+</tr>
+<tr>
+<td>결과</td>
+<td><strong>선제 성공 연출</strong>(들어올리기 1.5~2s) 후 서버 응답. 응답 지연 시 스피너→타임아웃 재동기화</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li><strong>불변 규칙 시각화</strong>: 성공 연출 후 "사실 실패" 금지(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §6.3</a>). 통신 실패 시 "동기화 중" 안내(증발 금지).</li>
+<li>게이지/존은 픽셀 톤 + 큰 타깃. 타이밍 색은 색맹 대응 위해 위치/형태 병행.</li>
+</ul>
+<h3 id="5-4-상점-shop">5.4 상점 (Shop)</h3>
+<pre><code>일일 슬롯 6  ·  남은시간 14:32:10        [🔄 광고 무료 리프레시]
+┌────┬────┬────┐
+│item│item│item│   가격칩(🪙/🦪) · 보유 표시
+├────┼────┼────┤
+│item│item│item│
+└────┴────┴────┘
+[ 진주 팩 ]  [ 스타터팩(첫구매) ]  [ 아쿠아 패스 ]
+</code></pre>
+<ul>
+<li>일일 6슬롯(<code>daily-shop-roll</code>). 진주 팩 사다리·스타터팩·패스 카드(<a href="../GUARDRAILS.md">GUARDRAILS §6</a> 상품/가격 — 디자인은 참조만).</li>
+<li>결제 버튼 = Premium 변형(시머). 가격은 명확·다크패턴 금지(코지 정합).</li>
+</ul>
+<h3 id="5-5-도감-dex">5.5 도감 (Dex)</h3>
+<pre><code>획득 42 / 120        희귀도 필터: [전체|C|R|★]
+┌──┬──┬──┬──┐
+│🐟│🐠│▦ │▦ │   미획득=실루엣(▦)
+├──┼──┼──┼──┤
+│★ │🐡│▦ │🐟│   ★=Cosmic 프레임+시머
+└──┴──┴──┴──┘
+세트 완성 보너스: 초당 코인 +5% (n/n)
+</code></pre>
+<ul>
+<li>카드 탭 → 상세(이름·성격·크기 기록·획득처). 미획득 실루엣은 호기심 자극.</li>
+<li>세트/마일스톤 버프 진행 표시(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §4.1</a>).</li>
+</ul>
+<h3 id="5-6-설정-settings">5.6 설정 (Settings)</h3>
+<ul>
+<li><strong>배경 품질</strong>: 표준 / 절전(셰이더 게이팅 직결 — <a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01 §3</a>).</li>
+<li><strong>낮/밤</strong>: 자동 / 항상 주간 / 항상 야간(<a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01 §4</a>).</li>
+<li>알림 권한(Android 13+ POST_NOTIFICATIONS), 계정(게스트→이메일 병합), 저모션 토글, 라이선스.</li>
+</ul>
+<hr>
+<h2 id="6-희귀도-상태-표기">6. 희귀도 · 상태 표기</h2>
+<ul>
+<li><strong>희귀도 프레임</strong>(색+형태 동시): Common 무광 사각 / Rare 림글로우 모서리 / Cosmic·Mythic 시머 + 모서리 보석. (<a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01 §2.4</a>, <a href="./03-픽셀-아트-에셋-가이드.md">03 §6</a>)</li>
+<li><strong>만족/불만족 배지</strong>: 만족 😊(<code>kelp</code>) / 불만족 😴 부드러운 앰버 — <em>경고 아님</em>. 1회 케어로 즉시 회복(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §1.2</a>).</li>
+<li><strong>성격(Nature) 텔</strong>: 도감·네임플레이트에 작은 성격 아이콘(겁쟁이/먹보/호기심/외톨이 — <a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §4.4</a>, 비주얼은 <a href="./03-픽셀-아트-에셋-가이드.md">03 §6</a>).</li>
+</ul>
+<hr>
+<h2 id="7-위젯-알림-공유-카드-네이티브-표면">7. 위젯 · 알림 · 공유 카드 (네이티브 표면)</h2>
+<blockquote>
+<p>배경-앱 브리지는 <strong>위젯 + 알림</strong>으로 확정(오버레이/더블탭 폐기 — <a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §2.2</a>).</p>
+</blockquote>
+<h3 id="7-1-홈-위젯-remoteviews-p0">7.1 홈 위젯 (RemoteViews, P0)</h3>
+<pre><code>┌──────────────────────────┐
+│ [어항 webp 스냅샷]         │ ← 웹앱 Canvas 생성 webp (GUARDRAILS §9)
+│  😊 만족 · 🪙 1,240        │
+│ [ 먹이 주기 ] [ 청소하기 ] │ ← PendingIntent → feed_fish/clean RPC
+└──────────────────────────┘
+</code></pre>
+<ul>
+<li>크기: 2×2(컴팩트) / 4×2(스냅샷+버튼). RemoteViews 제약상 <strong>픽셀 도트 비트맵 + 시스템 버튼</strong>.</li>
+<li><strong>토큰 없으면 버튼 비활성 + "앱 열기"</strong>(<a href="../GUARDRAILS.md">GUARDRAILS §9</a>). 비가시 시 연출은 큐잉→홈 복귀 flush(R1 — <a href="../설계서/03-네이티브-안드로이드-설계.md">설계서 03 §4</a>).</li>
+</ul>
+<h3 id="7-2-진행형-알림-제어센터-p1">7.2 진행형 알림 제어센터 (P1)</h3>
+<ul>
+<li>상단 상주 노티: 어항 상태 한 줄 + <code>[먹이][청소]</code> 액션. Android 13+ 런타임 권한.</li>
+</ul>
+<h3 id="7-3-공유-카드-소셜-바이럴">7.3 공유 카드 (소셜·바이럴)</h3>
+<pre><code>┌───────────────────────────┐
+│   [어항 스냅샷 풀 컷]        │  1080×1080(SNS) / 1200×630(OG)
+│                           │
+│  "○○의 수족관"             │
+│  ⭐⭐⭐⭐☆ · 어종 18 · Lv.7  │
+│  [픽셀 프레임 + 워드마크]    │
+│        aquadesk://aquarium/{token}  ← 불투명 share_token만
+└───────────────────────────┘
+</code></pre>
+<ul>
+<li><strong>raw <code>user_id</code> 노출 절대 금지</strong> → 불투명 <code>share_token</code>(<a href="../GUARDRAILS.md">GUARDRAILS §1·§5</a>, <a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §4.3</a>).</li>
+<li>방문자 버블탭 하트는 <em>다음 동기화 시점</em>에 반영(즉시 아님 — 안내 문구 필요).</li>
+</ul>
+<hr>
+<h2 id="8-접근성-품질-바">8. 접근성 · 품질 바</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>항목</th>
+<th>기준</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>텍스트 대비</td>
+<td>다크 위 본문 ≥ 4.5:1(<code>paper</code> on <code>ink-800</code> 충족), 캡션 ≥ 4.5:1</td>
+</tr>
+<tr>
+<td>색 비의존</td>
+<td>재화·희귀도·낚시 존을 <strong>색+형태/아이콘</strong> 병행(<a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">§2.3</a>, §6)</td>
+</tr>
+<tr>
+<td>탭 타깃</td>
+<td>≥ 44×44px</td>
+</tr>
+<tr>
+<td>타이밍</td>
+<td>낚시 입질 윈도우 1.0s(완화), 시간제한 UI는 연장/재시도 허용</td>
+</tr>
+<tr>
+<td>저모션</td>
+<td><code>prefers-reduced-motion</code> → 패럴랙스·시머 OFF</td>
+</tr>
+<tr>
+<td>가독성</td>
+<td>본문은 픽셀 폰트 금지(산세리프), 11px 미만 텍스트 금지</td>
+</tr>
+<tr>
+<td>다크 우선</td>
+<td>기본 다크(수중). 라이트 표면은 시트/카드 한정</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="다음">다음</h2>
+<p>→ UI에 들어가는 도트 아이콘·어종·장식·프레임의 <strong>픽셀 규격·프레임 예산·아틀라스</strong>는 <a href="./03-픽셀-아트-에셋-가이드.md">03-픽셀-아트-에셋-가이드.md</a></p>
+</section>
+<section class="doc" id="doc03" data-file="03-픽셀-아트-에셋-가이드.md">
+<h1 id="03-픽셀-아트-에셋-가이드">03. 픽셀 아트 에셋 가이드</h1>
+<blockquote>
+<p>도트 에셋의 <strong>규격·프레임 예산·변주·명명·익스포트</strong>를 못 박는 문서. 아티스트 납품 기준.<br>기술 한계: <a href="../기획서/01-앱-컨셉-기획.md">기획서 01 §3.3</a>(그래픽 스펙)·<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §5</a>(아트 방폭)·<a href="../설계서/README.md">설계서 README</a>(Aseprite→TexturePacker).<br>런타임 계약: 스프라이트 state enum·<code>FishSnapshot.x/y</code>는 <a href="../GUARDRAILS.md">GUARDRAILS §5</a>. 위치 권위는 네이티브 FSM, 아트는 <em>프레임만</em> 제공.</p>
+</blockquote>
+<hr>
+<h2 id="1-캔버스-규격">1. 캔버스 규격</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>에셋</th>
+<th>캔버스(px)</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>어종 스프라이트(일반)</td>
+<td><strong>32×32 ~ 48×48</strong></td>
+<td>3형 실루엣(<a href="#3-3형-스켈레톤-템플릿">§3</a>)</td>
+</tr>
+<tr>
+<td>히어로 어종(시그니처)</td>
+<td>최대 <strong>64×48</strong></td>
+<td>테마당 1~2종, 전용 도트(③)</td>
+</tr>
+<tr>
+<td>장식 타일</td>
+<td><strong>16×16</strong> 그리드</td>
+<td>배수로 큰 오브젝트 구성(32×16 등)</td>
+</tr>
+<tr>
+<td>UI 아이콘</td>
+<td><strong>16×16 / 24×24</strong></td>
+<td>1px 스트로크 통일(<a href="./02-UI-UX-디자인-시스템.md">02 §3.6</a>)</td>
+</tr>
+<tr>
+<td>터치 파문 파티클</td>
+<td>16×16, <strong>3프레임</strong></td>
+<td>AGSL 회피, 스프라이트 파티클(<a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01 §3</a>)</td>
+</tr>
+<tr>
+<td>배경 패럴랙스</td>
+<td>풀스크린 타일/스트립</td>
+<td>2~3레이어, 정적+저주기 스크롤</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li><strong>팔레트</strong>: 씬 합산 64색 마스터 팔레트 공유(<a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01 §2</a>). 어종별 임의 색 추가 금지.</li>
+<li>정수 픽셀 그리드 고정, 안티에일리어싱·서브픽셀 금지. 외곽선은 셀렉티브(전부 두르지 않음, 데이브 더 다이버식).</li>
+<li>셰이딩 단계는 색당 2~3단계로 절제(밀도는 형태·딜리트로, 색 남발 금지).</li>
+</ul>
+<hr>
+<h2 id="2-fsm-상태별-프레임-예산">2. FSM 상태별 프레임 예산</h2>
+<blockquote>
+<p>state enum 고정: <code>idle | swim | scatter | peek | yawn | sulk</code>(<a href="../GUARDRAILS.md">GUARDRAILS §5</a>). "불만족"은 <code>satisfied=false</code> 파생 → <code>sulk</code> 톤.<br>프레임 가이드: swim 4~6, 반응 2~3(<a href="../기획서/01-앱-컨셉-기획.md">기획서 01 §3.3</a>). <strong>보간 없음 = 순수 프레임</strong>(메시 디폼 금지 — <a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §5.2</a>).</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>state</th>
+<th>프레임</th>
+<th>루프</th>
+<th>의도</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>idle</code></td>
+<td>2–3</td>
+<td>loop</td>
+<td>제자리 호흡, 지느러미 미동</td>
+</tr>
+<tr>
+<td><code>swim</code></td>
+<td>4–6</td>
+<td>loop</td>
+<td>기본 패트롤</td>
+</tr>
+<tr>
+<td><code>scatter</code></td>
+<td>3–4</td>
+<td>once→swim</td>
+<td>터치/위협에 도주(겁쟁이=범위 2배)</td>
+</tr>
+<tr>
+<td><code>peek</code></td>
+<td>2–3</td>
+<td>once</td>
+<td>호기심 들여다보기(호기심=확률+30%)</td>
+</tr>
+<tr>
+<td><code>yawn</code></td>
+<td>3</td>
+<td>once</td>
+<td>장시간 미접촉 시 하품(앰비언트 생명감)</td>
+</tr>
+<tr>
+<td><code>sulk</code></td>
+<td>2</td>
+<td>slow loop</td>
+<td>불만족: 느린 미동 + 숨음</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li><strong>어종 1종 총 프레임 ≈ 17~23</strong>. 아틀라스/메모리 예산(RAM &lt; 30MB)의 근거.</li>
+<li>방향: 좌향 1벌 제작 → 우향은 <strong>수평 플립</strong>(별도 드로잉 금지).</li>
+</ul>
+<hr>
+<h2 id="3-3형-스켈레톤-템플릿">3. 3형 스켈레톤 템플릿</h2>
+<blockquote>
+<p>줄여주는 것은 <strong>로직(프레임 진행·트랜스폼)</strong>, 드로잉 공수는 거의 안 줆 — 아티스트 캐파 산정에 반영(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §5.2</a>).</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>형</th>
+<th>실루엣</th>
+<th>예시</th>
+<th>공유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>방추형(Fusiform)</strong></td>
+<td>유선형, 좌우로 긴</td>
+<td>참치·고등어류</td>
+<td>idle/swim/scatter 프레임 진행·꼬리 위상 동일</td>
+</tr>
+<tr>
+<td><strong>원반형(Discoid)</strong></td>
+<td>납작 둥근, 세로로 넓은</td>
+<td>엔젤·탱류</td>
+<td>peek 시 정면 틸트 공유</td>
+</tr>
+<tr>
+<td><strong>장형(Elongate)</strong></td>
+<td>길고 구불</td>
+<td>장어·실고기류</td>
+<td>swim 사인파 위상 공유</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>같은 형은 <strong>상태별 프레임 타이밍·앵커·히트박스 100% 공유</strong>. 아티스트는 실루엣 안에서 색·무늬·디테일만 채운다.</li>
+<li>앵커: 입 끝(먹이 추적), 무게중심(FSM 이동), 눈(야간 점등 포인트)을 형별로 표준 좌표 고정.</li>
+</ul>
+<hr>
+<h2 id="4-3단-테마-변주-파이프라인">4. 3단 테마 변주 파이프라인</h2>
+<blockquote>
+<p>테마 × 어종 × 모션의 곱셈 폭발 방지(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §5.1</a>). 신규 테마가 어종 전체를 새로 그리지 않게 한다.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>계층</th>
+<th>기법</th>
+<th>비용</th>
+<th>적용 범위</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① <strong>컬러 스왑</strong></td>
+<td>LUT / 색상 시프트 셰이더</td>
+<td>~0</td>
+<td><strong>모든</strong> 어종·장식의 테마별 색 변조, 낮/밤 LUT</td>
+</tr>
+<tr>
+<td>② <strong>테마 FX 패스</strong></td>
+<td>Additive glow·bloom·스캔라인(ES2.0)</td>
+<td>저렴</td>
+<td><em>형태가 아닌 빛</em> — 홀로그램·네온·발광. (사이버펑크의 "사이버네틱"은 여기)</td>
+</tr>
+<tr>
+<td>③ <strong>전용 도트</strong></td>
+<td>신규 스프라이트</td>
+<td>비쌈</td>
+<td><strong>히어로 어종 1~2종 한정</strong></td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>아티스트 납품의 90%는 <strong>베이스 도트 1벌</strong>(중립 팔레트). 테마 색감·발광은 ①②가 런타임 처리.</li>
+<li>"신규 색 효과 요청"이 들어오면 먼저 <strong>②(빛)로 가능한가?</strong>를 판단 → ③(고비용 신규 도트)로 새지 않게 게이트.</li>
+</ul>
+<hr>
+<h2 id="5-낮-밤-라이팅-납품물">5. 낮/밤 · 라이팅 납품물</h2>
+<p>각 어종/장식/배경은 다음을 제공(전용 도트 증가 없이 ①②로 해결 — <a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01 §4</a>):</p>
+<ul>
+<li><strong>베이스 도트</strong>(중립) 1벌</li>
+<li><strong>야간 Additive 점등 마스크</strong>: 눈·야광 부위만 흰색 마스크(런타임에 <code>glow-*</code> 틴트 + Additive)</li>
+<li>(테마별) <strong>LUT 색 변조표</strong> — 아트가 아니라 색 데이터</li>
+<li>배경: 주간/야간 색온도 프리셋 + God Rays 마스크(노이즈)</li>
+</ul>
+<hr>
+<h2 id="6-희귀도-성격-만족-비주얼-언어">6. 희귀도 · 성격 · 만족 비주얼 언어</h2>
+<h3 id="6-1-희귀도-색-형태-동시-색맹-대응">6.1 희귀도 (색 + 형태 동시 — 색맹 대응)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>티어</th>
+<th>도트 처리</th>
+<th>도감 프레임</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Common</td>
+<td>무광, 글로우 없음</td>
+<td>단순 사각 보더</td>
+</tr>
+<tr>
+<td>Rare</td>
+<td>1~2 액센트 + 림 글로우(FX ②)</td>
+<td>모서리 림 글로우</td>
+</tr>
+<tr>
+<td>Cosmic/Mythic</td>
+<td>시머·미세 파티클 + 시그니처 실루엣(③)</td>
+<td>시머 + 모서리 보석 마크</td>
+</tr>
+</tbody></table></div>
+<h3 id="6-2-성격-nature-traits-텔">6.2 성격(Nature Traits) 텔</h3>
+<blockquote>
+<p>FSM 가중치이자 <em>살짝 보이는</em> 비주얼 텔. <strong>신규 도트 없이</strong> 행동 + 작은 마커로 표현(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §4.4</a>).</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>성격</th>
+<th>행동 텔</th>
+<th>마커(도감/네임플레이트)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>겁쟁이</td>
+<td>scatter 범위 2배, 멀리 도주</td>
+<td>작은 땀방울 아이콘</td>
+</tr>
+<tr>
+<td>먹보</td>
+<td>먹이 이동속도 1.5배</td>
+<td>포크 아이콘</td>
+</tr>
+<tr>
+<td>호기심</td>
+<td>peek 확률 +30%, 자주 들여다봄</td>
+<td>물음표 아이콘</td>
+</tr>
+<tr>
+<td>외톨이</td>
+<td>군집 이탈, 외곽 단독 패트롤</td>
+<td>단독 점 아이콘</td>
+</tr>
+</tbody></table></div>
+<h3 id="6-3-만족-불만족-sulk-코지-규칙">6.3 만족 / 불만족(<code>sulk</code>) — 코지 규칙</h3>
+<blockquote>
+<p>죽음·죄책감 금지(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §1.2</a>). 불만족은 <em>부드럽게</em>, 회복은 1회로 즉시.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>상태</th>
+<th>비주얼 처리(전부 ①/알파, 신규 도트 없음)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>만족</td>
+<td>풀컬러, 정상 FSM, 가끔 peek/yawn</td>
+</tr>
+<tr>
+<td>불만족(<code>sulk</code>)</td>
+<td><strong>알파 ~50% 반투명</strong> + LUT 디새추레이션, 산호/바닥 뒤로 숨음, 느린 <code>sulk</code> 루프, Zzz 기포</td>
+</tr>
+<tr>
+<td>회복</td>
+<td>먹이/청소 1회 → <strong>팝 복귀 + 반짝(스파클)</strong>, 즉시 풀컬러</td>
+</tr>
+</tbody></table></div>
+<ul>
+<li>금지: 빨강·해골·기울어진 배·하강 화살표 등 <em>위협/죄책감</em> 기호(<a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01 §2.3</a>).</li>
+</ul>
+<hr>
+<h2 id="7-장식-ui-아이콘-규격">7. 장식 · UI 아이콘 규격</h2>
+<ul>
+<li><strong>장식 카테고리</strong>: 바닥(substrate) / 식물(plant) / 오브젝트(object) / 조명(lighting). 16px 그리드 스냅, 평점(풍수) 기여(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §4.2</a>).</li>
+<li>식물·우렁이 등 일부는 idle 미동 2~3프레임. <strong>자동 관리 봇(우렁이)</strong> = 아쿠아 패스 장식(<a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §1.3</a>), 별도 도트 + idle 루프.</li>
+<li>UI 아이콘: 16/24px, 1px 스트로크, 마스터 팔레트, 한 가지 스타일(<a href="./02-UI-UX-디자인-시스템.md">02 §3.6</a>).</li>
+</ul>
+<hr>
+<h2 id="8-아틀라스-명명-익스포트-파이프라인">8. 아틀라스 · 명명 · 익스포트 파이프라인</h2>
+<blockquote>
+<p>표준 도구: <strong>Aseprite(소스) → TexturePacker(atlas + JSON)</strong>(<a href="../설계서/README.md">설계서 README</a>). 포맷: WebP / PNG8.</p>
+</blockquote>
+<h3 id="8-1-소스-산출">8.1 소스 / 산출</h3>
+<ul>
+<li>소스: <code>*.aseprite</code>(레이어=상태/마스크 분리, 태그=FSM state). 마스터 팔레트 파일 공유.</li>
+<li>산출: 테마/카테고리별 아틀라스 <code>.png|.webp</code> + 메타 <code>.json</code>(프레임 rect·앵커·태그).</li>
+<li>위젯 스냅샷 webp는 <strong>웹앱 Canvas 생성</strong>(아트 아틀라스와 별개 — Edge/native 합성 금지, <a href="../GUARDRAILS.md">GUARDRAILS §9</a>).</li>
+</ul>
+<h3 id="8-2-명명-규약-파일-아틀라스-키">8.2 명명 규약 (파일·아틀라스 키)</h3>
+<blockquote>
+<p>파일/에셋 키 = <code>kebab-case</code>(<a href="../GUARDRAILS.md">GUARDRAILS §3</a>). 어종 키는 <code>fish_species</code> 카탈로그 id와 1:1 매핑.</p>
+</blockquote>
+<pre><code>에셋 키:  fish-clownfish-swim-0
+          fish-clownfish-sulk-1
+          fish-clownfish-night-mask
+          deco-kelp-tall-idle-0
+          icon-coin-16
+          ripple-particle-0
+아틀라스: atlas-fish-base.{webp,json}
+          atlas-deco-base.{webp,json}
+          atlas-ui-icons.{webp,json}
+          atlas-bg-deepsea.{webp,json}
+LUT:      lut-theme-cyberpunk-day.png  /  lut-theme-cyberpunk-night.png
+</code></pre>
+<ul>
+<li>어종 베이스는 <strong>테마 무관 1벌</strong>(<code>-base</code>), 테마 색은 LUT로 분리(폴더당 도트 중복 금지 — <a href="../GUARDRAILS.md">GUARDRAILS §10</a> 중복 정의 금지 정신과 정합).</li>
+</ul>
+<h3 id="8-3-성능-예산-정합-왜-이렇게-빡빡한가">8.3 성능 예산 정합 (왜 이렇게 빡빡한가)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>목표</th>
+<th>출처</th>
+<th>디자인 함의</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>배경 RAM &lt; 30MB</td>
+<td><a href="../기획서/01-앱-컨셉-기획.md">기획서 01 §3.3</a></td>
+<td>어종 총 프레임 ≤ ~23, 베이스 1벌 + LUT 변주</td>
+</tr>
+<tr>
+<td>CPU 피크 &lt; 5%(중급기)</td>
+<td>〃</td>
+<td>보간 없는 순수 프레임, 셰이더 게이팅 전제</td>
+</tr>
+<tr>
+<td>APK/번들 경량(&lt; 50MB)</td>
+<td><a href="../기획서/04-서비스-고도화-및-리스크-대응.md">기획서 04 §2.1</a></td>
+<td>WebP/PNG8, 아틀라스 패킹, 전용 도트(③) 최소화</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="9-아티스트-납품-체크리스트-어종-1종">9. 아티스트 납품 체크리스트 (어종 1종)</h2>
+<ul>
+<li><input disabled="" type="checkbox"> 3형 중 하나의 실루엣 준수(32~48px, 히어로만 64×48)</li>
+<li><input disabled="" type="checkbox"> <code>idle/swim/scatter/peek/yawn/sulk</code> 프레임(좌향 1벌, 총 ≤ ~23)</li>
+<li><input disabled="" type="checkbox"> 야간 Additive 점등 마스크(눈/야광 부위)</li>
+<li><input disabled="" type="checkbox"> 마스터 64색 팔레트만 사용, AA 없음</li>
+<li><input disabled="" type="checkbox"> 앵커(입·무게중심·눈) 형 표준 좌표 정합</li>
+<li><input disabled="" type="checkbox"> 희귀도 처리(Rare 림글로우는 FX ②로, 신규 색 추가 금지)</li>
+<li><input disabled="" type="checkbox"> 성격 마커는 도감용 16px 아이콘 별도(스프라이트 본체 변경 없음)</li>
+<li><input disabled="" type="checkbox"> <code>.aseprite</code> 소스 + 태그 + kebab-case 키 제출</li>
+</ul>
+<hr>
+<h2 id="관련">관련</h2>
+<ul>
+<li>톤·컬러·라이팅·테마 → <a href="./01-아트-디렉션-및-비주얼-아이덴티티.md">01-아트-디렉션-및-비주얼-아이덴티티.md</a></li>
+<li>UI 컴포넌트·화면·아이콘 사용처 → <a href="./02-UI-UX-디자인-시스템.md">02-UI-UX-디자인-시스템.md</a></li>
+<li>런타임 계약(state enum·스냅샷·브리지) → <a href="../GUARDRAILS.md">GUARDRAILS §5</a> · <a href="../설계서/02-데이터-모델.md">설계서 02</a></li>
+</ul>
+</section>
+</main>
+<button id="top" aria-label="맨 위로">↑</button>
+<div id="toast" role="status"></div>
+<script>
+const FILE_MAP = {"README.md":"overview","01-아트-디렉션-및-비주얼-아이덴티티.md":"doc01","02-UI-UX-디자인-시스템.md":"doc02","03-픽셀-아트-에셋-가이드.md":"doc03"};
+const tabs=[...document.querySelectorAll(".tab")];
+const docs=[...document.querySelectorAll(".doc")];
+const topBtn=document.getElementById("top");
+const toast=document.getElementById("toast");
+let toastT;
+function showToast(msg){toast.textContent=msg;toast.classList.add("show");clearTimeout(toastT);toastT=setTimeout(function(){toast.classList.remove("show");},1900);}
+function activate(id,anchor){var target=document.getElementById(id);if(!target)return;docs.forEach(function(d){d.classList.toggle("active",d.id===id);});tabs.forEach(function(t){t.classList.toggle("active",t.dataset.target===id);});var at=tabs.find(function(t){return t.dataset.target===id;});if(at)at.scrollIntoView({inline:"center",block:"nearest"});if(anchor){var el=document.getElementById(anchor);if(el){requestAnimationFrame(function(){el.scrollIntoView({behavior:"smooth",block:"start"});});return;}}window.scrollTo({top:0,behavior:"smooth"});}
+tabs.forEach(function(t){t.addEventListener("click",function(){activate(t.dataset.target);});});
+docs.forEach(function(doc){var heads=[...doc.querySelectorAll("h2, h3")];if(heads.length<2)return;var det=document.createElement("details");det.className="toc";var sum=document.createElement("summary");sum.textContent="목차";det.appendChild(sum);var ul=document.createElement("ul");heads.forEach(function(h){var li=document.createElement("li");var a=document.createElement("a");a.href="#"+h.id;a.textContent=h.textContent;if(h.tagName==="H3")a.className="lv3";li.appendChild(a);ul.appendChild(li);});det.appendChild(ul);var h1=doc.querySelector("h1");if(h1&&h1.nextSibling)doc.insertBefore(det,h1.nextSibling);else doc.insertBefore(det,doc.firstChild);});
+document.addEventListener("click",function(e){var a=e.target.closest("a");if(!a)return;var href=a.getAttribute("href")||"";if(href.charAt(0)==="#"){e.preventDefault();var id=decodeURIComponent(href.slice(1));var el=document.getElementById(id);if(!el){showToast("해당 위치를 찾지 못했어요");return;}var host=el.closest(".doc");if(host&&!host.classList.contains("active"))activate(host.id,id);else el.scrollIntoView({behavior:"smooth",block:"start"});var d0=a.closest("details.toc");if(d0)d0.open=false;return;}var base=decodeURIComponent(href.replace(/^\.?\//,"").split("#")[0]);var anchor=href.indexOf("#")>=0?decodeURIComponent(href.split("#").pop()):null;if(FILE_MAP[base]){e.preventDefault();activate(FILE_MAP[base],anchor);var d1=a.closest("details.toc");if(d1)d1.open=false;return;}if(/(\.\.\/|기획서|설계서|GUARDRAILS)/.test(href)){e.preventDefault();showToast("이 묶음에는 디자인 문서만 포함돼 있어요");return;}});
+addEventListener("scroll",function(){topBtn.classList.toggle("show",scrollY>500);},{passive:true});
+topBtn.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"});});
+</script>
+</body>
+</html>

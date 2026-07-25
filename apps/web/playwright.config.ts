@@ -1,0 +1,34 @@
+/**
+ * Playwright E2E — OS별 디바이스 프로파일 (설계서/04: 하이브리드 웹뷰 대상 화면).
+ *  - android: Pixel 7 (Chromium)  — Android WebView 근사
+ *  - ios:     iPhone 14 (WebKit)  — iOS WKWebView 근사
+ *  - desktop: Desktop Chrome
+ * hosted Supabase(.env.local)에 실제로 붙어 서버 권위 왕복까지 검증한다.
+ * 각 테스트는 새 브라우저 컨텍스트 = 새 익명 유저(부트스트랩 트리거 경유)로 격리된다.
+ */
+import { defineConfig, devices } from '@playwright/test';
+import './e2e/env'; // .env.local 로드 (테스트 헬퍼가 REST 직접 호출에 사용)
+
+export default defineConfig({
+  testDir: './e2e',
+  timeout: 60_000,
+  expect: { timeout: 15_000 },
+  fullyParallel: true,
+  reporter: [['line'], ['html', { open: 'never' }]],
+  use: {
+    baseURL: 'http://localhost:3000',
+    trace: 'retain-on-failure',
+    screenshot: 'only-on-failure',
+  },
+  projects: [
+    { name: 'android', use: { ...devices['Pixel 7'] } },
+    { name: 'ios', use: { ...devices['iPhone 14'] } },
+    { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
+  ],
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3000/lobby',
+    reuseExistingServer: true,
+    timeout: 120_000,
+  },
+});

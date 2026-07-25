@@ -1,0 +1,27 @@
+{
+  "name": "@aquadesk/game-spec",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Aqua Desk shared game spec (Single Source of Truth): snapshot types, economy constants, pure formulas, and fishing FSM. Pure TypeScript, no I/O. Imported by apps/web; ported/verified by native (parity vectors).",
+  "type": "module",
+  "license": "UNLICENSED",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node --test --experimental-strip-types \"__tests__/**/*.test.ts\""
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}

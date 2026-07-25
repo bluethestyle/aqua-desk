@@ -1,0 +1,27 @@
+{
+  "name": "aquadesk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Aqua Desk — 도트 수족관 라이브 배경 + 하이브리드 앱(웹 UI + 네이티브 셸). 수집·꾸미기·낚시·상점. (Cozy/Zen, Android-first)",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "npm run dev -w apps/web",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "db:smoke": "node scripts/db-smoke.mjs",
+    "db:apply": "node scripts/db-apply.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "embedded-postgres": "^18.3.0-beta.17",
+    "pg": "^8.21.0",
+    "supabase": "^2.109.1"
+  }
+}
