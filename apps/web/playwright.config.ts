@@ -9,6 +9,13 @@
 import { defineConfig, devices } from '@playwright/test';
 import './e2e/env'; // .env.local 로드 (테스트 헬퍼가 REST 직접 호출에 사용)
 
+/**
+ * E2E_BASE_URL 지정 시 배포본(예: Vercel 프로덕션)을 대상으로 실행한다.
+ *   PowerShell: $env:E2E_BASE_URL='https://aqua-desk-web.vercel.app'; npm run test:e2e -w apps/web
+ * 미지정이면 로컬 dev 서버(자동 기동/재사용) 대상.
+ */
+const EXTERNAL_BASE_URL = process.env.E2E_BASE_URL;
+
 export default defineConfig({
   testDir: './e2e',
   timeout: 60_000,
@@ -16,7 +23,7 @@ export default defineConfig({
   fullyParallel: true,
   reporter: [['line'], ['html', { open: 'never' }]],
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: EXTERNAL_BASE_URL ?? 'http://localhost:3000',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
@@ -25,10 +32,13 @@ export default defineConfig({
     { name: 'ios', use: { ...devices['iPhone 14'] } },
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
   ],
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000/lobby',
-    reuseExistingServer: true,
-    timeout: 120_000,
-  },
+  // 배포본 대상(E2E_BASE_URL)일 땐 로컬 dev 서버를 띄우지 않는다.
+  webServer: EXTERNAL_BASE_URL
+    ? undefined
+    : {
+        command: 'npm run dev',
+        url: 'http://localhost:3000/lobby',
+        reuseExistingServer: true,
+        timeout: 120_000,
+      },
 });
