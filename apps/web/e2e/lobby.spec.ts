@@ -26,4 +26,16 @@ test('로비: 먹이·청소·오프라인 적립 서버 왕복', async ({ page 
   await page.getByRole('button', { name: /오프라인 적립/ }).click();
   await expect(page.getByText(/오프라인 적립 \+/)).toBeVisible({ timeout: 15_000 });
   await expect(page.getByText(/오류:/)).toHaveCount(0);
+
+  // 하트 수령 (claim_gifts) — 신규 유저는 받은 선물 없음
+  await page.getByRole('button', { name: /하트 수령/ }).click();
+  await expect(page.getByText(/받을 선물이 아직 없어요/)).toBeVisible({ timeout: 15_000 });
+
+  // 공유 링크 발급 (issue_share_token) — 불투명 토큰 URL 노출(user_id 미포함)
+  await page.getByRole('button', { name: /공유 링크 만들기/ }).click();
+  const link = page.locator('a[href*="/aquarium/"]');
+  await expect(link).toBeVisible({ timeout: 15_000 });
+  const href = await link.getAttribute('href');
+  expect(href).toMatch(/\/aquarium\/[A-Za-z0-9_-]{16,}$/);
+  await expect(page.getByText(/오류:/)).toHaveCount(0);
 });

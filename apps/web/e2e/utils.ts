@@ -42,6 +42,38 @@ export async function rpcAs(
   return res.json();
 }
 
+/** 해당 유저 JWT로 aquadesk 스키마 테이블 SELECT(PostgREST). */
+export async function restGetAs(user: AnonUser, pathAndQuery: string): Promise<unknown> {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${pathAndQuery}`, {
+    headers: {
+      apikey: ANON_KEY,
+      Authorization: `Bearer ${user.accessToken}`,
+      'Accept-Profile': 'aquadesk',
+    },
+  });
+  if (!res.ok) throw new Error(`rest ${pathAndQuery} failed: ${res.status} ${await res.text()}`);
+  return res.json();
+}
+
+/** 해당 유저 JWT로 Edge Function 호출 — 상태코드까지 검증할 수 있게 raw 반환. */
+export async function edgeAs(
+  user: AnonUser,
+  fn: string,
+  body: unknown,
+): Promise<{ status: number; json: unknown }> {
+  const res = await fetch(`${SUPABASE_URL}/functions/v1/${fn}`, {
+    method: 'POST',
+    headers: {
+      apikey: ANON_KEY,
+      Authorization: `Bearer ${user.accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+  const json = (await res.json().catch(() => null)) as unknown;
+  return { status: res.status, json };
+}
+
 /** 문서의 가로 오버플로(px). 모바일 레이아웃 검증용 — 0이어야 정상. */
 export async function horizontalOverflow(page: Page): Promise<number> {
   return page.evaluate(() => {

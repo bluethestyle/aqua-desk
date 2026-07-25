@@ -11,6 +11,7 @@ const PAGES = [
   { link: '상점', heading: '상점' },
   { link: '낚시', heading: '낚시' },
   { link: '도감', heading: '도감' },
+  { link: '계정', heading: '계정' },
 ] as const;
 
 test('전 페이지 순회: 로드·지갑 로드·pageerror 없음·가로 스크롤 없음', async ({ page }) => {

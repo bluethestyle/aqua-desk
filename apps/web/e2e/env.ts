@@ -18,6 +18,10 @@ try {
 export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
 export const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
 
+/** 고정 테스트 계정(선택) — 크리덴셜은 커밋 금지라 .env.local/CI 시크릿으로만 주입. 없으면 해당 테스트 skip. */
+export const TEST_EMAIL = process.env.E2E_TEST_EMAIL ?? '';
+export const TEST_PASSWORD = process.env.E2E_TEST_PASSWORD ?? '';
+
 if (!SUPABASE_URL || !ANON_KEY) {
   throw new Error('e2e: NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY 필요 (.env.local)');
 }

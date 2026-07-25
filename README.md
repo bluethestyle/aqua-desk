@@ -24,10 +24,14 @@
 | 상점 `/shop` | ✅ 카탈로그 + purchase_item RPC + 인벤토리, IAP 사다리(스텁) |
 | 도감 `/dex` | ✅ 희귀도 티어 그리드 + 완성도 + 버프 안내 |
 | 공유 뷰어 `/aquarium/[token]` | ✅ get_shared_aquarium read-only(user_id 비노출) + send_heart |
-| E2E (`apps/web/e2e`) | ✅ Playwright 3 프로파일 × 10테스트 (스모크·로비·낚시·상점·도감·꾸미기·공유/자기하트 차단) |
+| 계정 `/account` | ✅ 게스트→정식 전환(진행 승계) · 이메일 로그인 · 로그아웃 |
+| E2E (`apps/web/e2e`) | ✅ Playwright 3 프로파일(android/ios/desktop) — UI 플로우 + API 계약(save_slots CAS·광고 한도) |
+| CI (`.github/workflows/ci.yml`) | ✅ typecheck·game-spec·build + E2E 매트릭스 |
 | `apps/android`, `apps/ios` | ⬜ 자리표시(추후) |
 
-**알려진 한계/추후**: ① 꾸미기 `slots` owner-write는 `version`을 못 올려 네이티브 sync는 `updated_at` 기반이거나 향후 `save_slots` RPC 필요 ② `purchase_item` 멱등키·`grant-ad-reward` 일일제한은 프로토 TODO ③ `daily-shop-roll` 미연결(상점은 카탈로그 직접 조회) ④ 네이티브/iOS 미구현.
+**알려진 한계/추후**: ① `purchase_item` 클라 멱등키(더블클릭은 busy 가드로만 방지) ② `grant-ad-reward` SSV는 형식 검증 스텁(서명 검증은 프로덕션 전 교체 — 일일한도·nonce 멱등은 구현됨) ③ `offline_x2`/`shop_refresh` 광고 보상은 토큰성 적립 미구현(수락만) ④ 네이티브(Android 배경/셸)·iOS 미구현.
+
+**해소됨(2026-07-25)**: ~~slots version 미증가~~ → `save_slots` RPC(version CAS), ~~daily-shop-roll 미연결~~ → 상점 "오늘의 상점" 6슬롯, ~~광고 일일제한 없음~~ → `ad_reward_log`(한도+nonce 멱등), 계정 페이지(게스트→정식 전환·로그인·로그아웃) 추가.
 
 ## 핵심 원칙 (요약 — 상세는 GUARDRAILS)
 
