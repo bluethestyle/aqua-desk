@@ -13,6 +13,7 @@ const NAV: Array<{ href: string; label: string }> = [
   { href: '/shop', label: '상점' },
   { href: '/fishing', label: '낚시' },
   { href: '/dex', label: '도감' },
+  { href: '/account', label: '계정' },
 ];
 
 export function PageShell({

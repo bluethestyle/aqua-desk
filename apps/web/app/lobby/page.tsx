@@ -18,7 +18,14 @@ import { PageShell } from '../../components/page-shell';
 import { AquariumCanvas } from '../../components/aquarium-canvas';
 import { requestWalletRefresh } from '../../components/wallet-bar';
 import { loadLobby, type LobbyState } from '../../lib/supabase/aquarium';
-import { cleanAquarium, collectOffline, feedFish, isConflict } from '../../lib/supabase/rpc';
+import {
+  claimGifts,
+  cleanAquarium,
+  collectOffline,
+  feedFish,
+  isConflict,
+  issueShareToken,
+} from '../../lib/supabase/rpc';
 
 export default function LobbyPage() {
   const [state, setState] = useState<LobbyState | null>(null);
@@ -26,6 +33,8 @@ export default function LobbyPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  /** 발급된 공유 링크(세션 내 표시용 — 토큰은 30일 만료, user_id 미노출). */
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     const next = await loadLobby();
@@ -126,6 +135,58 @@ export default function LobbyPage() {
     })();
   }, [state, busy, refresh]);
 
+  /** 공유 링크 발급(issue_share_token — 불투명 토큰만, GUARDRAILS §1.3). */
+  const onShare = useCallback(() => {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    setNotice(null);
+    (async () => {
+      try {
+        const token = await issueShareToken(1);
+        setShareUrl(`${window.location.origin}/aquarium/${token}`);
+      } catch (e) {
+        setError(describe(e));
+      } finally {
+        setBusy(false);
+      }
+    })();
+  }, [busy]);
+
+  /** 공유 링크 클립보드 복사(미지원 환경은 문구로 안내). */
+  const onCopyShare = useCallback(() => {
+    if (!shareUrl) return;
+    (async () => {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        setNotice('공유 링크를 복사했어요.');
+      } catch {
+        setNotice('복사가 차단됐어요 — 링크를 직접 선택해 복사하세요.');
+      }
+    })();
+  }, [shareUrl]);
+
+  /** 받은 하트 수령(claim_gifts — 서버가 적립·100→1000코인 환산까지 권위 처리). */
+  const onClaim = useCallback(() => {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    setNotice(null);
+    (async () => {
+      try {
+        const claimed = await claimGifts();
+        setNotice(
+          claimed > 0 ? `하트 ${claimed}개를 받았어요 💗 (100개마다 1,000코인 자동 환산)` : '받을 선물이 아직 없어요.',
+        );
+        requestWalletRefresh();
+      } catch (e) {
+        setError(describe(e));
+      } finally {
+        setBusy(false);
+      }
+    })();
+  }, [busy]);
+
   return (
     <PageShell title="로비">
       {loading && <p>불러오는 중…</p>}
@@ -156,6 +217,39 @@ export default function LobbyPage() {
             <button type="button" onClick={onCollect} disabled={busy} style={btn}>
               오프라인 적립 (collect_offline)
             </button>
+            <button type="button" onClick={onClaim} disabled={busy} style={btn}>
+              하트 수령 (claim_gifts)
+            </button>
+          </section>
+
+          {/* 소셜 공유: 불투명 토큰 링크만 노출(user_id 금지 — GUARDRAILS §1.3) */}
+          <section
+            style={{
+              marginTop: 12,
+              padding: 12,
+              borderRadius: 10,
+              border: '1px solid #233040',
+              background: '#0f1822',
+            }}
+          >
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+              <button type="button" onClick={onShare} disabled={busy} style={btn}>
+                내 어항 공유 링크 만들기 (issue_share_token)
+              </button>
+              {shareUrl && (
+                <button type="button" onClick={onCopyShare} style={btn}>
+                  복사
+                </button>
+              )}
+            </div>
+            {shareUrl && (
+              <p style={{ margin: '10px 0 0', fontSize: 13, wordBreak: 'break-all' }}>
+                <a href={shareUrl} style={{ color: '#7fd0ff' }}>
+                  {shareUrl}
+                </a>
+                <span style={{ opacity: 0.6 }}> · 30일 유효 · 링크를 아는 사람만 열람(읽기 전용)</span>
+              </p>
+            )}
           </section>
         </>
       )}

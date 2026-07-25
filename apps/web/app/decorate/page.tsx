@@ -25,8 +25,7 @@ import { AquariumCanvas } from '../../components/aquarium-canvas';
 import { requestWalletRefresh } from '../../components/wallet-bar';
 import { loadLobby, type LobbyState } from '../../lib/supabase/aquarium';
 import { loadInventory, type InventoryEntry } from '../../lib/supabase/queries';
-import { getSupabaseClient } from '../../lib/supabase/client';
-import { isConflict, setAquariumTheme } from '../../lib/supabase/rpc';
+import { isConflict, saveSlots as saveSlotsRpc, setAquariumTheme } from '../../lib/supabase/rpc';
 
 /** 테마 변경 시연용 — 카탈로그(themes) 시드와 정합(설계서 seed.sql). */
 const THEME_CHOICES: ReadonlyArray<{ id: string; label: string }> = [
@@ -138,37 +137,37 @@ export default function DecoratePage() {
     if (state) setSlots(state.snapshot.slots);
   }, [state]);
 
-  // ── 저장: slots 만 직접 UPDATE(★예외 허용). 실패 시 refresh 후 1회 재시도. ──
+  // ── 저장: save_slots RPC(version CAS — GUARDRAILS §4.1/§4.3). conflict → refresh 후 1회 재시도. ──
   const saveSlots = useCallback(async () => {
     if (!state || busy) return;
     setBusy(true);
     setError(null);
     setNotice(null);
-    const aquariumId = state.aquariumId;
-    const supabase = getSupabaseClient();
-
-    // slots만 보낸다. theme_id/version 등 보호 컬럼은 절대 포함 금지(guard 트리거 복원/거부).
-    const writeSlots = (): Promise<{ error: unknown }> =>
-      supabase.from('aquariums').update({ slots }).eq('id', aquariumId) as unknown as Promise<{
-        error: unknown;
-      }>;
+    // 드래프트를 지역 변수로 캡처 — conflict 재시도 중 refresh가 드래프트 상태를 되돌려도
+    // 저장 내용은 유지된다(권위는 저장 후 재조회 결과).
+    const draft = slots as unknown as ReadonlyArray<Record<string, unknown>>;
 
     try {
-      let res = await writeSlots();
-      if (res.error) {
-        // RLS 거부/정합 실패 → 스냅샷 refresh 후 1회 재시도(GUARDRAILS §1.5, §9).
-        if (isConflict(res.error)) {
-          await refresh();
-          res = await writeSlots();
+      try {
+        await saveSlotsRpc(state.aquariumId, draft, state.snapshot.version);
+      } catch (e) {
+        // version CAS 불일치 → 최신 스냅샷으로 refresh 후 새 version으로 1회 재시도.
+        if (isConflict(e)) {
+          const fresh = await refresh();
+          await saveSlotsRpc(fresh.aquariumId, draft, fresh.snapshot.version);
+        } else {
+          throw e;
         }
-        if (res.error) throw res.error;
       }
       // 저장 후 서버 권위로 재조회(slots 드래프트도 reconcile).
       await refresh();
-      setNotice('슬롯 배치를 저장했습니다.');
+      setNotice('슬롯 배치를 저장했습니다 (save_slots · version CAS).');
     } catch (e) {
       setError(describe(e));
       await refresh().catch(() => undefined);
+      // 저장 실패 시 드래프트 복원 — refresh가 서버값으로 덮어도 편집 내용은 지키고
+      // dirty 상태를 유지해 사용자가 즉시 재시도할 수 있게 한다.
+      setSlots(draft as unknown as SlotPlacement[]);
     } finally {
       setBusy(false);
     }
@@ -321,7 +320,7 @@ export default function DecoratePage() {
 
             <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
               <button type="button" onClick={() => void saveSlots()} disabled={busy || !dirty} style={btn}>
-                저장 (aquariums.slots UPDATE)
+                저장 (save_slots RPC)
               </button>
               <button type="button" onClick={resetDraft} disabled={busy || !dirty} style={btn}>
                 되돌리기
@@ -354,9 +353,9 @@ export default function DecoratePage() {
       )}
 
       <p style={{ opacity: 0.6, marginTop: 16, fontSize: 13 }}>
-        slots 만 클라 owner-write 허용(RLS aquariums_update_slots). theme_id 등 보호 컬럼은 RPC
-        경유(직접 write 금지). 낙관적 UI는 표시용이며 권위는 저장 후 재조회 결과(conflict → refresh
-        후 재시도).
+        슬롯 저장은 save_slots RPC(version CAS — 네이티브 sync가 version 비교로 갱신 감지).
+        theme_id 등 보호 컬럼은 별도 RPC 경유(직접 write 금지). 낙관적 UI는 표시용이며 권위는 저장
+        후 재조회 결과(conflict → refresh 후 재시도).
       </p>
     </PageShell>
   );

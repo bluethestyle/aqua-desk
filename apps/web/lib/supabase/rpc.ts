@@ -137,6 +137,27 @@ export async function setAquariumTheme(
 }
 
 /**
+ * save_slots(aquarium_id uuid, slots jsonb, expected_version int) → {status, version}.
+ * 꾸미기 슬롯 저장 + version CAS(GUARDRAILS §1.5) — 직접 UPDATE 대신 이 RPC 사용(§4.1).
+ * conflict 반환 시 스냅샷 refresh 후 새 version으로 재시도. 반환 = 새 version.
+ */
+export async function saveSlots(
+  aquariumId: string,
+  slots: ReadonlyArray<Record<string, unknown>>,
+  expectedVersion: number,
+  db?: SupabaseClient,
+): Promise<number> {
+  const { data, error } = await client(db).rpc('save_slots', {
+    aquarium_id: aquariumId,
+    slots,
+    expected_version: expectedVersion,
+  });
+  if (error) throw error;
+  const res = expectOkStatus<{ status?: string; version?: number }>(data);
+  return Number(res.version);
+}
+
+/**
  * issue_share_token(aquarium_idx int) → text. 16자+ 불투명 토큰만 반환.
  * URL/응답에 user_id 노출 금지(GUARDRAILS §1.3) — 공유는 토큰만.
  */
@@ -228,14 +249,21 @@ export async function verifyReceipt(
 /**
  * grant-ad-reward (kind text). 광고 보상 서버 지급, 일 횟수 제한, SSV. — P1
  * kind: 'stamina' | 'offline_x2' | 'shop_refresh' (설계서/04 §5.1)
+ * SSV nonce: 프로토 스텁 — 실제 광고 SDK 연동 시 광고 네트워크 콜백 서명으로 교체.
  */
 export async function grantAdReward(
   kind: 'stamina' | 'offline_x2' | 'shop_refresh',
   db?: SupabaseClient,
-): Promise<unknown> {
+): Promise<{ ok: boolean; granted: boolean; stamina?: number }> {
+  const nonce =
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
   const { data, error } = await client(db).functions.invoke('grant-ad-reward', {
-    body: { kind },
+    body: { kind, ssv: { nonce } },
   });
   if (error) throw error;
-  return data;
+  const res = data as { ok?: boolean; granted?: boolean; stamina?: number } | null;
+  if (!res?.ok) throw new Error('ad_reward_failed');
+  return { ok: true, granted: res.granted === true, stamina: res.stamina };
 }

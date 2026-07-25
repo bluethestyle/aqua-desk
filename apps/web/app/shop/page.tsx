@@ -26,7 +26,21 @@ import {
   type CatalogItem,
   type InventoryEntry,
 } from '../../lib/supabase/queries';
-import { isConflict, purchaseItem } from '../../lib/supabase/rpc';
+import { dailyShopRoll, isConflict, purchaseItem } from '../../lib/supabase/rpc';
+import { ensureSession } from '../../lib/supabase/session';
+
+/** daily-shop-roll 응답(설계서/04 §5.2 — date+user seed 6슬롯, 진열만·구매는 purchase_item). */
+interface DailyShop {
+  date: string;
+  slots: Array<{
+    slot: number;
+    item_id: string;
+    type: CatalogItem['type'];
+    price_coin: number | null;
+    price_pearl: number | null;
+    asset_key: string;
+  }>;
+}
 
 const TYPE_LABEL: Record<CatalogItem['type'], string> = {
   deco: '장식',
@@ -43,6 +57,8 @@ const TYPE_EMOJI: Record<CatalogItem['type'], string> = {
 export default function ShopPage() {
   const [items, setItems] = useState<CatalogItem[] | null>(null);
   const [inventory, setInventory] = useState<InventoryEntry[]>([]);
+  const [daily, setDaily] = useState<DailyShop | null>(null);
+  const [dailyError, setDailyError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -73,6 +89,24 @@ export default function ShopPage() {
         if (alive) setError(describe(e));
       } finally {
         if (alive) setLoading(false);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // 오늘의 상점(Edge) — 카탈로그와 독립 로드: 실패해도 전체 카탈로그는 유지(우아한 축소).
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        // Edge invoke는 사용자 JWT가 필요하다(게이트웨이 검증) — 세션 보장 후 호출.
+        await ensureSession();
+        const roll = (await dailyShopRoll()) as DailyShop;
+        if (alive && roll && Array.isArray(roll.slots)) setDaily(roll);
+      } catch (e) {
+        if (alive) setDailyError(describe(e));
       }
     })();
     return () => {
@@ -136,6 +170,50 @@ export default function ShopPage() {
         </p>
       )}
       {notice && <p style={{ color: '#8affb0' }}>{notice}</p>}
+
+      {/* 오늘의 상점 — date+user seed 6슬롯(서버 결정, 클라 조작 불가). 구매는 동일 purchase_item. */}
+      {(daily || dailyError) && (
+        <section style={{ marginBottom: 20 }}>
+          <h2 style={{ fontSize: 16, margin: '4px 0 8px' }}>
+            오늘의 상점 (daily-shop-roll){daily && <span style={{ opacity: 0.6, fontWeight: 400, fontSize: 13 }}> · {daily.date} (UTC 자정 갱신)</span>}
+          </h2>
+          {dailyError && (
+            <p style={{ opacity: 0.7, fontSize: 13 }}>오늘의 상점을 불러오지 못했어요: {dailyError}</p>
+          )}
+          {daily && (
+            <div style={grid}>
+              {daily.slots.map((s) => {
+                const item: CatalogItem = {
+                  id: s.item_id,
+                  type: s.type,
+                  priceCoin: s.price_coin,
+                  pricePearl: s.price_pearl,
+                  assetKey: s.asset_key,
+                  themeId: null,
+                };
+                const owned = ownedQty(s.item_id);
+                return (
+                  <div key={s.slot} style={card}>
+                    <div style={{ fontSize: 28, lineHeight: 1 }}>{TYPE_EMOJI[s.type] ?? '🎁'}</div>
+                    <div style={{ fontWeight: 600, marginTop: 6 }}>{s.item_id}</div>
+                    <div style={{ opacity: 0.7, fontSize: 12 }}>슬롯 {s.slot + 1} · {TYPE_LABEL[s.type] ?? s.type}</div>
+                    <div style={{ marginTop: 6, fontSize: 13 }}>{priceLabel(item)}</div>
+                    <div style={{ marginTop: 4, fontSize: 12, opacity: 0.8 }}>보유: {owned.toLocaleString()}</div>
+                    <button
+                      type="button"
+                      onClick={() => onBuy(item)}
+                      disabled={busyId !== null}
+                      style={{ ...btn, marginTop: 8, opacity: busyId !== null ? 0.6 : 1 }}
+                    >
+                      {busyId === s.item_id ? '구매 중…' : '구매'}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      )}
 
       {items && (
         <section>

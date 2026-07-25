@@ -37,7 +37,7 @@ import {
 } from '@aquadesk/game-spec';
 import { PageShell } from '../../components/page-shell';
 import { requestWalletRefresh } from '../../components/wallet-bar';
-import { fishingResolve, startFishing } from '../../lib/supabase/rpc';
+import { fishingResolve, grantAdReward, startFishing } from '../../lib/supabase/rpc';
 
 /** 낚시터(설계서/04). 프로토는 홈 어항 풀('home') 고정. */
 const SPOT_ID = 'home';
@@ -74,6 +74,7 @@ export default function FishingPage() {
   const [resolving, setResolving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [staminaBlocked, setStaminaBlocked] = useState(false);
+  const [adNotice, setAdNotice] = useState<string | null>(null);
 
   // 캐스팅 게이지(0..1) / 릴링 time-in-zone(0..1) — 데모 인터랙션 입력.
   const [castGauge, setCastGauge] = useState(0.5);
@@ -94,11 +95,35 @@ export default function FishingPage() {
     [],
   );
 
+  /**
+   * 광고 보상 스텁(grant-ad-reward 'stamina'): 서버가 +1 지급(cap 적용, 일 한도).
+   * 실제 광고 SDK는 네이티브 셸에서 붙는다 — 웹 프로토는 시청 완료를 가정한 스텁.
+   */
+  const onAdReward = useCallback(() => {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    setAdNotice(null);
+    (async () => {
+      try {
+        const res = await grantAdReward('stamina');
+        setStaminaBlocked(false);
+        setAdNotice(`광고 보상 지급: 스태미나 ⚡ ${res.stamina ?? '+1'} — 다시 시작할 수 있어요.`);
+        requestWalletRefresh();
+      } catch (e) {
+        setError(describe(e));
+      } finally {
+        setBusy(false);
+      }
+    })();
+  }, [busy]);
+
   /** 0) 진입: 스태미나 게이트 + 세션 선점. 부족/에러 시 진입 차단. */
   const begin = useCallback(async () => {
     setBusy(true);
     setError(null);
     setStaminaBlocked(false);
+    setAdNotice(null);
     setReward(null);
     setEmptyHanded(false);
     setCastPerfect(false);
@@ -226,12 +251,20 @@ export default function FishingPage() {
           </p>
           {staminaBlocked && (
             <p style={{ color: '#ffd28a', margin: '0 0 8px' }}>
-              스태미나 부족 — 잠시 후 다시 시도하세요(상단 ⚡ 확인).
+              스태미나 부족 — 잠시 후 다시 시도하거나 광고 보상으로 충전하세요(상단 ⚡ 확인).
             </p>
           )}
-          <button type="button" onClick={() => void begin()} disabled={busy} style={btnPrimary}>
-            {busy ? '입수 중…' : '낚시 시작 (start_fishing · 스태미나 −1)'}
-          </button>
+          {adNotice && <p style={{ color: '#8affb0', margin: '0 0 8px' }}>{adNotice}</p>}
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button type="button" onClick={() => void begin()} disabled={busy} style={btnPrimary}>
+              {busy ? '입수 중…' : '낚시 시작 (start_fishing · 스태미나 −1)'}
+            </button>
+            {staminaBlocked && (
+              <button type="button" onClick={onAdReward} disabled={busy} style={btn}>
+                광고 보고 ⚡ +1 (grant-ad-reward · 스텁)
+              </button>
+            )}
+          </div>
         </section>
       )}
 
