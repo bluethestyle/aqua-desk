@@ -25,6 +25,14 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
  */
 let browserClient: SupabaseClient | null = null;
 
+/**
+ * 네이티브 WebView 모드 감지(R8) — UA 토큰 'AquaDesk-Android'(설계서/03 §8).
+ * 브리지 주입(window.AquaDesk)보다 UA가 먼저 확정되므로 클라 생성 시점 판별은 UA 기준.
+ */
+export function isNativeMode(): boolean {
+  return typeof navigator !== 'undefined' && navigator.userAgent.includes('AquaDesk-Android');
+}
+
 export function getSupabaseClient(): SupabaseClient {
   if (browserClient) return browserClient;
 
@@ -44,11 +52,15 @@ export function getSupabaseClient(): SupabaseClient {
     //   대시보드 Settings → API → Exposed schemas 에 'aquadesk' 추가 필요.
     db: { schema: 'aquadesk' },
     auth: {
-      // 웹 단독 모드 기본값. 네이티브 모드(R8)에서는 브리지 세션을 주입하고
-      // autoRefreshToken을 비활성화하는 별도 부트스트랩을 둔다(추후 A5 단계).
-      // TODO(A5): 네이티브 모드 감지 시 { autoRefreshToken: false, persistSession: false }로 생성.
-      persistSession: true,
-      autoRefreshToken: true,
+      // R8 세션 단일화(설계서/03 §6.1, A5): 네이티브 모드에서는 refresh의 단일 주체가
+      // 네이티브(SyncWorker/TokenRefresher)다.
+      //  - autoRefreshToken:false 만으로는 부족하다 — supabase-js는 getSession()/모든 RPC 전에
+      //    access 만료 시 저장된 refresh로 lazy refresh를 수행한다. 따라서 persistSession도 꺼서
+      //    웹이 '낡은 refresh token을 보관·사용하는' 경로 자체를 제거한다(메모리 세션만).
+      //  - 콜드스타트 승계/위탁은 lib/supabase/native-session.ts + native-session-sync.tsx가
+      //    브리지(getAuthSession/setAuthSession)로 수행하며, 만료 전 access만 주입한다.
+      persistSession: !isNativeMode(),
+      autoRefreshToken: !isNativeMode(),
       detectSessionInUrl: true,
     },
     // 미타입 클라이언트라 db.schema 제네릭('aquadesk')만 달라진다 → 기본 SupabaseClient로 캐스트

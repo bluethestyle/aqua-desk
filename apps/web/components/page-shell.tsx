@@ -5,6 +5,7 @@
 
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { NativeSessionSync } from './native-session-sync';
 import { WalletBar } from './wallet-bar';
 
 const NAV: Array<{ href: string; label: string }> = [
@@ -25,6 +26,7 @@ export function PageShell({
 }) {
   return (
     <main style={{ maxWidth: 720, margin: '0 auto', padding: '24px 16px' }}>
+      <NativeSessionSync />
       <nav style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 16 }}>
         {NAV.map((n) => (
           <Link key={n.href} href={n.href} style={{ color: '#7fd0ff', textDecoration: 'none' }}>

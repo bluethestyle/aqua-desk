@@ -18,6 +18,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { PageShell } from '../../components/page-shell';
 import { requestWalletRefresh } from '../../components/wallet-bar';
+import { clearAuthSession, hasBridge } from '../../lib/bridge';
 import { getSupabaseClient } from '../../lib/supabase/client';
 import { ensureSession } from '../../lib/supabase/session';
 
@@ -131,6 +132,9 @@ export default function AccountPage() {
     setError(null);
     (async () => {
       try {
+        // ★명시적 로그아웃만 네이티브 세션을 파기한다(R8) — SIGNED_OUT 이벤트 기반 자동
+        // 파기는 refresh 일시 오류에도 발화해 유효한 네이티브 세션을 죽이므로 금지.
+        if (hasBridge()) void clearAuthSession();
         const supabase = getSupabaseClient();
         await supabase.auth.signOut();
         window.location.assign('/lobby'); // 다음 진입 시 새 게스트 시작.

@@ -12,7 +12,8 @@
  * 네이티브 모드 주입은 추후(A5) lib/bridge에서 처리.
  */
 
-import { getSupabaseClient } from './client';
+import { getSupabaseClient, isNativeMode } from './client';
+import { adoptNativeSession, nativeHasSession } from './native-session';
 
 /**
  * 익명 가입 single-flight 프라미스(모듈 단일).
@@ -37,6 +38,22 @@ export async function ensureSession(): Promise<string> {
 
   if (!signupInflight) {
     signupInflight = (async (): Promise<string> => {
+      // ★R8 게이트(리뷰 확정 결함 픽스): 네이티브 모드에서는 익명 가입 전에 반드시
+      // 네이티브 세션 승계를 시도한다. 네이티브가 실계정 세션을 보유 중인데 웹이 새 게스트를
+      // 만들면, 그 게스트 토큰이 위탁되어 Keystore의 실계정 토큰을 덮어써 버린다.
+      if (isNativeMode()) {
+        const adopted = await adoptNativeSession();
+        if (adopted) {
+          const { data: adoptedSession } = await supabase.auth.getSession();
+          const user = adoptedSession.session?.user;
+          if (user) return user.id;
+        }
+        if (await nativeHasSession()) {
+          // 네이티브 세션은 있는데 승계가 아직 안 됨(일시 상태) — 게스트 포크 금지.
+          throw new Error('native_session_pending: 네이티브 세션 승계 대기 중 — 잠시 후 재시도');
+        }
+      }
+
       // 이중 확인: 대기 중 다른 경로(로그인 등)로 세션이 생겼으면 가입하지 않는다.
       const { data: again } = await supabase.auth.getSession();
       if (again.session?.user) return again.session.user.id;
