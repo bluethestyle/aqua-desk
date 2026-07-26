@@ -52,7 +52,12 @@ object AuthStore {
         return gen.generateKey()
     }
 
-    fun save(ctx: Context, refreshToken: String, accessToken: String?) {
+    /**
+     * 저장 성공 여부 반환 — Keystore는 기기별로 실제 예외(KeyStoreException/ProviderException)를
+     * 던진다. 위젯 raw thread에서 uncaught면 프로세스(=라이브 배경 포함) 전체가 죽으므로
+     * 절대 throw하지 않는다(리뷰 확정 결함 픽스).
+     */
+    fun save(ctx: Context, refreshToken: String, accessToken: String?): Boolean = try {
         val plain = AuthSession(refreshToken, accessToken).toJson().toByteArray(Charsets.UTF_8)
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.ENCRYPT_MODE, secretKey())
@@ -61,6 +66,19 @@ object AuthStore {
             .putString(PREF_CIPHER, Base64.encodeToString(encrypted, Base64.NO_WRAP))
             .putString(PREF_IV, Base64.encodeToString(cipher.iv, Base64.NO_WRAP))
             .apply()
+        true
+    } catch (_: Exception) {
+        false
+    }
+
+    /**
+     * compare-and-clear: 저장된 refresh token이 `expectedRefreshToken`일 때만 파기.
+     * refresh Invalid 판정 시 무조건 clear하면, 판정 사이에 다른 경로가 회전·저장한
+     * '유효한 새 토큰'까지 지워버린다(리뷰 확정 결함 픽스 — 회전 임계구역 정합).
+     */
+    fun clearIfTokenMatches(ctx: Context, expectedRefreshToken: String) {
+        val current = load(ctx)
+        if (current?.refreshToken == expectedRefreshToken) clear(ctx)
     }
 
     fun load(ctx: Context): AuthSession? {

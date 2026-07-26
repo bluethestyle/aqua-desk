@@ -44,4 +44,26 @@ object LocalCacheStore {
         save(ctx, parsed)
         return parsed
     }
+
+    /**
+     * 원자적 read-modify-write — load와 save 사이에 다른 스레드(SyncWorker 등)의 저장이
+     * 끼어들어 최신 권위 스냅샷을 낡은 기반의 사본이 덮어쓰는 레이스 방지(리뷰 픽스).
+     */
+    fun update(ctx: Context, transform: (AquariumSnapshot) -> AquariumSnapshot): AquariumSnapshot =
+        synchronized(lock) {
+            val current = try {
+                val f = file(ctx)
+                if (f.exists()) AquariumSnapshot.fromJson(f.readText()) else AquariumSnapshot.default()
+            } catch (_: Exception) {
+                AquariumSnapshot.default()
+            }
+            val next = transform(current)
+            val tmp = File(ctx.filesDir, "$FILE_NAME.tmp")
+            tmp.writeText(next.toJson())
+            if (!tmp.renameTo(file(ctx))) {
+                file(ctx).writeText(next.toJson())
+                tmp.delete()
+            }
+            next
+        }
 }

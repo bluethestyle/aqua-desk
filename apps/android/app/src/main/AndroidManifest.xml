@@ -8,15 +8,19 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".AquaDeskApp"
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
         android:theme="@style/Theme.AquaDesk">
 
         <!-- WebView 셸 (설계서/03 §8): UA 'AquaDesk-Android' + JS 브리지 -->
+        <!-- singleTop: 위젯/딥링크發 재진입 시 기존 셸 재사용(onNewIntent 라우팅) —
+             standard면 WebView 인스턴스가 적층된다(리뷰 확정 결함). -->
         <activity
             android:name=".web.WebAppActivity"
             android:exported="true"
+            android:launchMode="singleTop"
             android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,5 +53,26 @@
             android:name=".ipc.CacheSignalProvider"
             android:authorities="com.aquadesk.cache"
             android:exported="false" />
+
+        <!-- 위젯(설계서/03 §7): [먹이][청소] → QuickActionReceiver → 서버 RPC -->
+        <receiver
+            android:name=".widget.AquariumWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_aquarium_info" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.QuickActionReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.aquadesk.app.action.FEED" />
+                <action android:name="com.aquadesk.app.action.CLEAN" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

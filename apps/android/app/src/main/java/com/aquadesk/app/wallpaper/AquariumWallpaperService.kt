@@ -31,22 +31,42 @@ class AquariumWallpaperService : WallpaperService() {
 
         @Volatile private var lastTouchAt = 0L
 
+        /**
+         * 연출 워터마크(at 최대값) — pendingAnims는 캐시에 잔존하므로, 무관한 notify
+         * (설정 토글 등)마다 같은 연출이 유령 재생되는 것을 막는다(리뷰 확정 결함 픽스).
+         */
+        private var animWatermark = 0L
+
         private fun nowSec(): Double = System.nanoTime() / 1_000_000_000.0
+
+        /** 워터마크 이후의 새 연출만 골라 워터마크를 전진시킨다. */
+        private fun takeFreshAnims(
+            anims: List<com.aquadesk.app.model.PendingAnim>,
+        ): List<com.aquadesk.app.model.PendingAnim> {
+            val fresh = anims.filter { it.at > animWatermark }
+            if (fresh.isNotEmpty()) animWatermark = fresh.maxOf { it.at }
+            return fresh
+        }
 
         override fun onCreate(surfaceHolder: SurfaceHolder) {
             super.onCreate(surfaceHolder)
             setTouchEventsEnabled(true)
-            renderer.applySnapshot(LocalCacheStore.load(applicationContext), nowSec())
+            val initial = LocalCacheStore.load(applicationContext)
+            // 서비스 재시작 시 캐시에 남은 과거 연출은 재생하지 않는다.
+            animWatermark = initial.pendingAnims.maxOfOrNull { it.at } ?: 0L
+            renderer.applySnapshot(initial, nowSec())
 
             // 캐시 변경 통지(브리지 applySnapshot / QuickAction / SyncWorker) 구독.
             observer = WallpaperBus.observe(applicationContext) {
                 val snap = LocalCacheStore.load(applicationContext)
                 renderer.applySnapshot(snap, nowSec())
+                val fresh = takeFreshAnims(snap.pendingAnims)
+                if (fresh.isEmpty()) return@observe
                 if (isVisible) {
-                    renderer.playAnims(snap.pendingAnims, nowSec())
+                    renderer.playAnims(fresh, nowSec())
                 } else {
                     // ★R1 비가시 큐잉 — 복귀 시 flush 재생.
-                    animQueue.enqueue(snap.pendingAnims)
+                    animQueue.enqueue(fresh)
                 }
             }
         }

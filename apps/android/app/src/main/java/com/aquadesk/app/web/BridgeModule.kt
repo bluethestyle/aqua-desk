@@ -9,8 +9,10 @@ import android.webkit.JavascriptInterface
 import com.aquadesk.app.ipc.WallpaperBus
 import com.aquadesk.app.store.AuthStore
 import com.aquadesk.app.store.LocalCacheStore
+import com.aquadesk.app.sync.SyncWorker
 import com.aquadesk.app.wallpaper.AquariumWallpaperService
 import com.aquadesk.app.wallpaper.ShaderGate
+import com.aquadesk.app.widget.AquariumWidgetProvider
 import java.lang.ref.WeakReference
 
 /**
@@ -78,17 +80,27 @@ class BridgeModule(context: Context, activity: Activity?) {
     @JavascriptInterface
     fun getAuthSession(): String = AuthStore.load(appContext)?.toJson() ?: "null"
 
-    /** R8: 웹 로그인 후 refresh token 위탁(Keystore 암호화 저장). */
+    /** R8: 웹 로그인 후 refresh token 위탁(Keystore 암호화 저장) → 즉시 1회 동기화 + 위젯 활성. */
     @JavascriptInterface
     fun setAuthSession(refreshToken: String): String {
         if (refreshToken.isBlank()) return "error:empty_token"
-        AuthStore.save(appContext, refreshToken, null)
+        val current = AuthStore.load(appContext)
+        if (current?.refreshToken == refreshToken) {
+            // 동일 토큰 재위탁(콜드스타트 승계 신호 등) — 보유 access를 지우지 않는다(리뷰 픽스).
+            // 동기화는 트리거하되, 회전은 TokenRefresher가 access 만료 시에만 수행하므로 낭비 없음.
+            SyncWorker.enqueueOnce(appContext)
+            return "ok"
+        }
+        if (!AuthStore.save(appContext, refreshToken, null)) return "error:store_failed"
+        SyncWorker.enqueueOnce(appContext)
+        AquariumWidgetProvider.updateAll(appContext)
         return "ok"
     }
 
     @JavascriptInterface
     fun clearAuthSession() {
         AuthStore.clear(appContext)
+        AquariumWidgetProvider.updateAll(appContext)
     }
 
     /** 셰이더 게이팅 절전 토글(설계서/03 §1 ShaderGate). */

@@ -2,4 +2,8 @@
 <resources>
     <string name="app_name">Aqua Desk</string>
     <string name="wallpaper_description">도트 수족관 라이브 배경 — 물고기들이 홈 화면에서 헤엄칩니다.</string>
+    <string name="widget_status_ready">어항 관리 — 탭 한 번으로 먹이/청소</string>
+    <string name="widget_status_login">앱에서 로그인하면 사용할 수 있어요</string>
+    <string name="widget_btn_feed">🍤 먹이</string>
+    <string name="widget_btn_clean">🧽 청소</string>
 </resources>
